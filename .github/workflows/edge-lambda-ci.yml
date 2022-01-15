@@ -3,6 +3,7 @@ on:
   push:
     paths:
       - "edge-lambdas/**"
+      - ".github/workflows/edge-lambda-ci.yml"
 
 defaults:
   run:
