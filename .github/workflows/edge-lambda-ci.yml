@@ -1,0 +1,24 @@
+name: Lambda@Edge CI
+on:
+  push:
+    paths:
+      - "edge-lambdas/**"
+
+defaults:
+  run:
+    working-directory: edge-lambdas
+
+jobs:
+  test:
+    name: Test
+    runs-on: [self-hosted, universal]
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Dependencies
+        uses: bahmutov/npm-install@v1
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GH_REGISTRY_NPM_TOKEN }}
+      - name: Run tests
+        run: make test
