@@ -64,6 +64,5 @@ jobs:
       - name: Build
         run: make
       - name: Upload Files
-        run:
-          aws s3 cp dist s3://${{ env.BUCKET_NAME }}/edge-lambdas/${jq -r
-          .version package.json}.tar.gz
+        run: |
+          aws s3 cp dist s3://${{ env.BUCKET_NAME }}/edge-lambdas/$(jq -r .version package.json)
