@@ -1,6 +1,6 @@
 {
   "private": true,
-  "version": "0.0.1",
+  "version": "0.0.2",
   "dependencies": {
     "aws-sdk": "2.1058.0"
   },
@@ -8,7 +8,7 @@
     "@pleo-io/prettier-config": "1.0.0",
     "@types/aws-lambda": "8.10.89",
     "@types/jest": "27.4.0",
-    "@types/node": "17.0.8",
+    "@types/node": "17.0.9",
     "@vercel/ncc": "0.33.1",
     "jest": "27.4.7",
     "prettier": "2.5.1",

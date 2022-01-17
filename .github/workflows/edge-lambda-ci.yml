@@ -40,7 +40,7 @@ jobs:
   upload:
     name: Build & Upload
     runs-on: [self-hosted, universal]
-    # if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/master'
     permissions:
       contents: read
     steps:
