@@ -5,6 +5,9 @@ on:
       - "edge-lambdas/**"
       - ".github/workflows/edge-lambda-ci.yml"
 
+env:
+  S3_BUCKET: pleo-product-web-registry
+
 defaults:
   run:
     working-directory: edge-lambdas
@@ -30,3 +33,33 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.GH_REGISTRY_NPM_TOKEN }}
       - name: Run tests
         run: make test
+  upload:
+    name: Build & Upload
+    runs-on: [self-hosted, universal]
+    if: github.ref == 'refs/heads/master'
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "16"
+          registry-url: "https://npm.pkg.github.com"
+          scope: "@pleo-io"
+      - uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-west-1
+      - name: Install Dependencies
+        uses: bahmutov/npm-install@v1
+        with:
+          working-directory: edge-lambdas
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GH_REGISTRY_NPM_TOKEN }}
+      - name: Build
+        run: make
+      - name: Upload Files
+        run:
+          aws s3 cp dist s3://${{ env.BUCKET_NAME }}/edge-lambdas/${jq -r
+          .version package.json}.tar.gz

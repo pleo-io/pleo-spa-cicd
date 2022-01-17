@@ -1,43 +1,33 @@
 import { CloudFrontRequestEvent } from "aws-lambda";
 import S3 from "aws-sdk/clients/s3";
-
 import { getHandler } from "./viewer-request";
 
-jest.mock("./config", () => ({ getConfig: () => ({}) }));
 jest.mock("aws-sdk/clients/s3", () =>
-  jest.fn().mockReturnValue({
-    getObject: jest.fn().mockReturnValue({
-      promise: jest.fn().mockReturnValue({
-        Body: JSON.stringify({}),
-      }),
-    }),
-  })
+  jest.fn().mockReturnValue({ getObject: jest.fn() })
 );
+const MockedS3 = S3 as jest.MockedClass<typeof S3>;
 
-const mockGetObjectFn = (S3 as jest.MockedClass<typeof S3>).mock.results[0]
-  .value.getObject;
-
-beforeEach(() => {
-  mockGetObjectFn.mockReset();
-});
+beforeEach(() => jest.resetAllMocks());
 
 describe(`Viewer request Lambda@Edge`, () => {
   test(`When requesting app.pleo.io 
           it modifies the request to fetch the latest production HTML
     `, async () => {
-    mockGetObjectFn.mockReturnValue({
-      promise: jest.fn().mockReturnValue({ Body: "some-hash-1234" }),
-    });
-    const handler = getHandler({
-      environment: "production",
-      originBucketName: "test-origin-bucket-prod",
-      originBucketRegion: "eu-west-1",
-    });
+    const s3 = mockGetObject("some-hash-1234");
+
+    const handler = getHandler(
+      {
+        environment: "production",
+        originBucketName: "test-origin-bucket-prod",
+        originBucketRegion: "eu-west-1",
+      },
+      s3
+    );
     const event = mockRequestEvent({ host: "app.pleo.io" });
 
     const response = await handler(event, {} as any, () => {});
 
-    expect(mockGetObjectFn).toHaveBeenCalledWith({
+    expect(s3.getObject).toHaveBeenCalledWith({
       Bucket: "test-origin-bucket-prod",
       Key: `deploys/master`,
     });
@@ -51,23 +41,24 @@ describe(`Viewer request Lambda@Edge`, () => {
     );
   });
 
-  test(`When requesting app.staging.pleo.io 
-          it modifies the request to fetch the latest staging HTML
-    `, async () => {
-    mockGetObjectFn.mockReturnValue({
-      promise: jest.fn().mockReturnValue({ Body: "some-hash-2412" }),
-    });
-    const handler = getHandler({
-      environment: "staging",
-      originBucketName: "test-origin-bucket-staging",
-      originBucketRegion: "eu-west-1",
-      previewDeploymentPostfix: ".app.staging.pleo.io",
-    });
+  test(`When requesting app.staging.pleo.io
+            it modifies the request to fetch the latest staging HTML
+      `, async () => {
+    const s3 = mockGetObject("some-hash-2412");
+    const handler = getHandler(
+      {
+        environment: "staging",
+        originBucketName: "test-origin-bucket-staging",
+        originBucketRegion: "eu-west-1",
+        previewDeploymentPostfix: ".app.staging.pleo.io",
+      },
+      s3
+    );
     const event = mockRequestEvent({ host: "app.staging.pleo.io" });
 
     const response = await handler(event, {} as any, () => {});
 
-    expect(mockGetObjectFn).toHaveBeenCalledWith({
+    expect(s3.getObject).toHaveBeenCalledWith({
       Bucket: "test-origin-bucket-staging",
       Key: `deploys/master`,
     });
@@ -82,22 +73,24 @@ describe(`Viewer request Lambda@Edge`, () => {
   });
 
   test(`When requesting e.g. my-feature.app.staging.pleo.io
-          it modifies the request to fetch the latest HTML for that branch
-    `, async () => {
-    mockGetObjectFn.mockReturnValue({
-      promise: jest.fn().mockReturnValue({ Body: "some-hash-23125" }),
-    });
-    const handler = getHandler({
-      environment: "staging",
-      originBucketName: "test-origin-bucket-staging",
-      originBucketRegion: "eu-west-1",
-      previewDeploymentPostfix: ".app.staging.pleo.io",
-    });
+            it modifies the request to fetch the latest HTML for that branch
+      `, async () => {
+    const s3 = mockGetObject("some-hash-23125");
+
+    const handler = getHandler(
+      {
+        environment: "staging",
+        originBucketName: "test-origin-bucket-staging",
+        originBucketRegion: "eu-west-1",
+        previewDeploymentPostfix: ".app.staging.pleo.io",
+      },
+      s3
+    );
     const event = mockRequestEvent({ host: "my-feature.app.staging.pleo.io" });
 
     const response = await handler(event, {} as any, () => {});
 
-    expect(mockGetObjectFn).toHaveBeenCalledWith({
+    expect(s3.getObject).toHaveBeenCalledWith({
       Bucket: "test-origin-bucket-staging",
       Key: `deploys/my-feature`,
     });
@@ -112,15 +105,16 @@ describe(`Viewer request Lambda@Edge`, () => {
   });
 
   test(`Handles requests for specific html files`, async () => {
-    mockGetObjectFn.mockReturnValue({
-      promise: jest.fn().mockReturnValue({ Body: "some-hash-23125" }),
-    });
-    const handler = getHandler({
-      environment: "staging",
-      originBucketName: "test-origin-bucket-staging",
-      originBucketRegion: "eu-west-1",
-      previewDeploymentPostfix: ".app.staging.pleo.io",
-    });
+    const s3 = mockGetObject("some-hash-23125");
+    const handler = getHandler(
+      {
+        environment: "staging",
+        originBucketName: "test-origin-bucket-staging",
+        originBucketRegion: "eu-west-1",
+        previewDeploymentPostfix: ".app.staging.pleo.io",
+      },
+      s3
+    );
     const event = mockRequestEvent({
       host: "my-feature.app.staging.pleo.io",
       uri: "/iframe.html",
@@ -128,7 +122,7 @@ describe(`Viewer request Lambda@Edge`, () => {
 
     const response = await handler(event, {} as any, () => {});
 
-    expect(mockGetObjectFn).toHaveBeenCalledWith({
+    expect(s3.getObject).toHaveBeenCalledWith({
       Bucket: "test-origin-bucket-staging",
       Key: `deploys/my-feature`,
     });
@@ -143,15 +137,16 @@ describe(`Viewer request Lambda@Edge`, () => {
   });
 
   test(`Handles requests for well known files`, async () => {
-    mockGetObjectFn.mockReturnValue({
-      promise: jest.fn().mockReturnValue({ Body: "some-hash-23125" }),
-    });
-    const handler = getHandler({
-      environment: "staging",
-      originBucketName: "test-origin-bucket-staging",
-      originBucketRegion: "eu-west-1",
-      previewDeploymentPostfix: ".app.staging.pleo.io",
-    });
+    const s3 = mockGetObject("some-hash-23125");
+    const handler = getHandler(
+      {
+        environment: "staging",
+        originBucketName: "test-origin-bucket-staging",
+        originBucketRegion: "eu-west-1",
+        previewDeploymentPostfix: ".app.staging.pleo.io",
+      },
+      s3
+    );
     const event = mockRequestEvent({
       host: "my-feature.app.staging.pleo.io",
       uri: "/.well-known/apple-app-site-association",
@@ -159,7 +154,7 @@ describe(`Viewer request Lambda@Edge`, () => {
 
     const response = await handler(event, {} as any, () => {});
 
-    expect(mockGetObjectFn).toHaveBeenCalledWith({
+    expect(s3.getObject).toHaveBeenCalledWith({
       Bucket: "test-origin-bucket-staging",
       Key: `deploys/my-feature`,
     });
@@ -173,15 +168,19 @@ describe(`Viewer request Lambda@Edge`, () => {
     );
   });
 
-  test(`When requesting e.g. preview-83436472715537da0ee129412de8df6bc1287500.app.staging.pleo.io 
-          it modifies the request to fetch the HTML for that tree hash
-    `, async () => {
-    const handler = getHandler({
-      environment: "staging",
-      originBucketName: "test-origin-bucket-staging",
-      originBucketRegion: "eu-west-1",
-      previewDeploymentPostfix: ".app.staging.pleo.io",
-    });
+  test(`When requesting e.g. preview-83436472715537da0ee129412de8df6bc1287500.app.staging.pleo.io
+            it modifies the request to fetch the HTML for that tree hash
+      `, async () => {
+    const s3 = mockGetObject("some-hash-23125");
+    const handler = getHandler(
+      {
+        environment: "staging",
+        originBucketName: "test-origin-bucket-staging",
+        originBucketRegion: "eu-west-1",
+        previewDeploymentPostfix: ".app.staging.pleo.io",
+      },
+      s3
+    );
 
     const event = mockRequestEvent({
       host: "preview-83436472715537da0ee129412de8df6bc1287500.app.staging.pleo.io",
@@ -189,7 +188,7 @@ describe(`Viewer request Lambda@Edge`, () => {
 
     const response = await handler(event, {} as any, () => {});
 
-    expect(mockGetObjectFn).not.toHaveBeenCalled();
+    expect(s3.getObject).not.toHaveBeenCalled();
     expect(response).toEqual(
       requestFromEvent(
         mockRequestEvent({
@@ -200,26 +199,31 @@ describe(`Viewer request Lambda@Edge`, () => {
     );
   });
 
-  test(`When requesting preview of an unknown branch, 
-          it modifies the request too return a 404 page
-    `, async () => {
-    jest.spyOn(console, "error").mockImplementation(() => {});
-    mockGetObjectFn.mockReturnValue({
+  test(`When requesting preview of an unknown branch,
+            it modifies the request too return a 404 page
+      `, async () => {
+    const s3 = new MockedS3();
+    s3.getObject = jest.fn().mockReturnValue({
       promise: jest.fn().mockRejectedValue(new Error("network error, yo")),
     });
-    const handler = getHandler({
-      environment: "staging",
-      originBucketName: "test-origin-bucket-staging",
-      originBucketRegion: "eu-west-1",
-      previewDeploymentPostfix: ".app.staging.pleo.io",
-    });
+    jest.spyOn(console, "error").mockImplementation(() => {});
+
+    const handler = getHandler(
+      {
+        environment: "staging",
+        originBucketName: "test-origin-bucket-staging",
+        originBucketRegion: "eu-west-1",
+        previewDeploymentPostfix: ".app.staging.pleo.io",
+      },
+      s3
+    );
     const event = mockRequestEvent({
       host: "what-is-this-branch.app.staging.pleo.io",
     });
 
     const response = await handler(event, {} as any, () => {});
 
-    expect(mockGetObjectFn).toHaveBeenCalledWith({
+    expect(s3.getObject).toHaveBeenCalledWith({
       Bucket: "test-origin-bucket-staging",
       Key: `deploys/what-is-this-branch`,
     });
@@ -235,6 +239,14 @@ describe(`Viewer request Lambda@Edge`, () => {
     expect(console.error).toHaveBeenCalledTimes(1);
   });
 });
+
+const mockGetObject = (returnValue: string) => {
+  const s3 = new MockedS3();
+  s3.getObject = jest.fn().mockReturnValue({
+    promise: jest.fn().mockReturnValue({ Body: returnValue }),
+  });
+  return s3;
+};
 
 // Returns a mock Cloudfront viewer request event with the specified host and URI. See
 // https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/lambda-event-structure.html#example-viewer-request for
@@ -286,5 +298,6 @@ const mockRequestEvent = ({
     },
   ],
 });
+
 const requestFromEvent = (event: CloudFrontRequestEvent) =>
   event.Records[0].cf.request;

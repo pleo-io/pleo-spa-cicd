@@ -1,8 +1,6 @@
 import { CloudFrontResponseEvent } from "aws-lambda";
 import { getHandler } from "./viewer-response";
 
-jest.mock("./config");
-
 describe(`Viewer response Lambda@Edge`, () => {
   test(`Adds security and cache control custom headers to a response object for prod`, async () => {
     const handler = getHandler({

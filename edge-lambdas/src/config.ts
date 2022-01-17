@@ -15,5 +15,6 @@ export type Config = {
   originBucketName: string;
   originBucketRegion: string;
   previewDeploymentPostfix?: string;
+  defaultBranchName?: string;
   blockIframes?: string;
 };

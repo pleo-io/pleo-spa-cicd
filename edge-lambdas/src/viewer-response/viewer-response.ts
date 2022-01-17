@@ -1,8 +1,6 @@
 import { CloudFrontResponse, CloudFrontResponseHandler } from "aws-lambda";
-import { getConfig, Config } from "./config";
-import { setHeader } from "./utils";
-
-const config = getConfig();
+import { Config } from "../config";
+import { setHeader } from "../utils";
 
 /**
  * Edge Lambda handler triggered on "viewer-response" event, on the default CF behavior of the web app CF distribution.
@@ -13,7 +11,6 @@ const config = getConfig();
  *
  * We're going via a getHandler method to aid testing with dependency injection
  */
-export const handler = getHandler(config);
 export function getHandler(config: Config) {
   const handler: CloudFrontResponseHandler = async (event) => {
     let response = event.Records[0].cf.response;
