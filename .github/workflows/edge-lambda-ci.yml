@@ -5,6 +5,10 @@ on:
       - "edge-lambdas/**"
       - ".github/workflows/edge-lambda-ci.yml"
 
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 env:
   S3_BUCKET: pleo-product-web-registry
 
@@ -36,7 +40,7 @@ jobs:
   upload:
     name: Build & Upload
     runs-on: [self-hosted, universal]
-    if: github.ref == 'refs/heads/master'
+    # if: github.ref == 'refs/heads/master'
     permissions:
       contents: read
     steps:
