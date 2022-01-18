@@ -6,7 +6,7 @@ on:
       - ".github/workflows/edge-lambda-ci.yml"
 
 concurrency:
-  group: ci-${{ github.ref }}
+  group: edge-lambda-ci-${{ github.ref }}
   cancel-in-progress: true
 
 env:
