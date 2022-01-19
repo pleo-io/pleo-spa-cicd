@@ -1,6 +1,5 @@
 # Get the number of CPUs and allow building in parallel
-NPROCS = $(shell sysctl hw.ncpu  | grep -o '[0-9]\+')
-MAKEFLAGS += -j$(NPROCS)
+MAKEFLAGS += -j3
 
 all: test build
 
