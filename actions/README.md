@@ -17,3 +17,5 @@ which help implementing a CI/CD pipeline described in this repository.
 Each action is written in TypeScript and bundled into a single JS file using
 [`@vercel/ncc`](https://github.com/vercel/ncc). Note that we version the generated JS files in the
 repo, so you need to run the build locally and include the changes to the built actions in your PR.
+
+To build the actions, run `make build`. Tests, written in Jest, you can run them with `make test`.

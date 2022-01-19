@@ -26,7 +26,7 @@ jobs:
           working-directory: actions
       - name: Run tests
         run: make test
-      - name: Prettier
+      - name: Run Prettier
         run: yarn prettier -c .
   check:
     name: Build & Check
