@@ -38,7 +38,7 @@ action in a step prior to running this action to ensure that's the case.
   with:
       aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
       aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-- uses: 'pleo-io/frontend-infrastructure/actions/cursor-deploy@v1'
+- uses: 'pleo-io/frontend-infrastructure/actions/s3-cache@v1'
   id: s3-cache
   with:
       bucket_name: my-s3-bucket
