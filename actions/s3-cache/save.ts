@@ -6,35 +6,35 @@
  * Uploads a cache file to the S3 bucket, if the file was not uploaded before.
  */
 
-import * as core from "@actions/core"
-import { writeLineToFile, copyFileToS3, runAction } from "../utils"
+import * as core from '@actions/core'
+import {writeLineToFile, copyFileToS3, runAction} from '../utils'
 
 runAction(() => {
-  const bucket = core.getInput("bucket_name", { required: true })
-  const hash = core.getState("hash")
-  const key = core.getState("key")
+    const bucket = core.getInput('bucket_name', {required: true})
+    const hash = core.getState('hash')
+    const key = core.getState('key')
 
-  return saveS3Cache({ bucket, hash, key })
+    return saveS3Cache({bucket, hash, key})
 })
 
 export async function saveS3Cache({
-  bucket,
-  hash,
-  key,
+    bucket,
+    hash,
+    key
 }: {
-  bucket: string
-  hash?: string
-  key?: string
+    bucket: string
+    hash?: string
+    key?: string
 }) {
-  if (!hash || !key) {
-    core.info(`Tree hash already processed, skipping saving the cache file.`)
-    return
-  }
+    if (!hash || !key) {
+        core.info(`Tree hash already processed, skipping saving the cache file.`)
+        return
+    }
 
-  // The content of the file doesn't really matter,
-  // since we're only checking if the file exists
-  await writeLineToFile({ text: hash, path: hash })
-  await copyFileToS3({ path: hash, bucket, key })
+    // The content of the file doesn't really matter,
+    // since we're only checking if the file exists
+    await writeLineToFile({text: hash, path: hash})
+    await copyFileToS3({path: hash, bucket, key})
 
-  core.info(`Tree hash ${hash} was processed, saved the ${key} cache file.`)
+    core.info(`Tree hash ${hash} was processed, saved the ${key} cache file.`)
 }

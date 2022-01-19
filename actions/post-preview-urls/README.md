@@ -2,8 +2,8 @@
 
 ![](./screenshot.png)
 
-Update PR description with the links to the latest preview deployment of that
-PR. Optionally, also includes a link to storybook deployment.
+Update PR description with the links to the latest preview deployment of that PR. Optionally, also
+includes a link to storybook deployment.
 
 ## Inputs
 
@@ -16,17 +16,17 @@ PR. Optionally, also includes a link to storybook deployment.
 
 ```yml
 jobs:
-  update-pr-desc:
-    name: Post Preview URLs to PR Description
-    runs-on: ubuntu-20.04
-    permissions:
-      contents: read
-      pull-requests: write
-    steps:
-      - uses: actions/checkout@v2
-      - uses: "pleo-io/frontend-infrastructure/actions/post-preview-urls@v1"
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          app_domain: my-app.preview.example.com
-          stories_domain: my-app-stories.preview.example.com
+    update-pr-desc:
+        name: Post Preview URLs to PR Description
+        runs-on: ubuntu-20.04
+        permissions:
+            contents: read
+            pull-requests: write
+        steps:
+            - uses: actions/checkout@v2
+            - uses: 'pleo-io/frontend-infrastructure/actions/post-preview-urls@v1'
+              with:
+                  token: ${{ secrets.GITHUB_TOKEN }}
+                  app_domain: my-app.preview.example.com
+                  stories_domain: my-app-stories.preview.example.com
 ```

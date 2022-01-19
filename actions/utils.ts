@@ -1,5 +1,5 @@
-import { exec } from "@actions/exec"
-import * as core from "@actions/core"
+import {exec} from '@actions/exec'
+import * as core from '@actions/core'
 
 /**
  * Retrieves the current root tree hash of the git repository
@@ -8,7 +8,7 @@ import * as core from "@actions/core"
  * @returns treeHash - SHA-1 root tree hash
  */
 export async function getCurrentRepoTreeHash() {
-  return execReadOutput("git rev-parse", ["HEAD:"])
+    return execReadOutput('git rev-parse', ['HEAD:'])
 }
 
 /**
@@ -18,17 +18,8 @@ export async function getCurrentRepoTreeHash() {
  * @param options.bucket - The name of the S3 bucket (globally unique)
  * @returns fileExists - boolean indicating if the file exists
  */
-export async function fileExistsInS3({
-  key,
-  bucket,
-}: {
-  key: string
-  bucket: string
-}) {
-  return execIsSuccessful("aws s3api head-object", [
-    `--bucket=${bucket}`,
-    `--key=${key}`,
-  ])
+export async function fileExistsInS3({key, bucket}: {key: string; bucket: string}) {
+    return execIsSuccessful('aws s3api head-object', [`--bucket=${bucket}`, `--key=${key}`])
 }
 
 /**
@@ -38,14 +29,8 @@ export async function fileExistsInS3({
  * @param options.path - The local path of the file (relative to working dir)
  * @returns exitCode - shell command exit code
  */
-export async function writeLineToFile({
-  text,
-  path,
-}: {
-  text: string
-  path: string
-}) {
-  return exec(`/bin/bash -c "echo ${text} > ${path}"`)
+export async function writeLineToFile({text, path}: {text: string; path: string}) {
+    return exec(`/bin/bash -c "echo ${text} > ${path}"`)
 }
 
 /**
@@ -57,15 +42,15 @@ export async function writeLineToFile({
  * @returns exitCode - shell command exit code
  */
 export async function copyFileToS3({
-  path,
-  key,
-  bucket,
+    path,
+    key,
+    bucket
 }: {
-  path: string
-  key: string
-  bucket: string
+    path: string
+    key: string
+    bucket: string
 }) {
-  return exec("aws s3 cp", [path, `s3://${bucket}/${key}`])
+    return exec('aws s3 cp', [path, `s3://${bucket}/${key}`])
 }
 
 /**
@@ -75,14 +60,8 @@ export async function copyFileToS3({
  * @param options.bucket - The name of the S3 bucket (globally unique)
  * @returns exitCode - shell command exit code
  */
-export async function removeFileFromS3({
-  key,
-  bucket,
-}: {
-  key: string
-  bucket: string
-}) {
-  return exec("aws s3 rm", [`s3://${bucket}/${key}`])
+export async function removeFileFromS3({key, bucket}: {key: string; bucket: string}) {
+    return exec('aws s3 rm', [`s3://${bucket}/${key}`])
 }
 
 /**
@@ -90,10 +69,10 @@ export async function removeFileFromS3({
  * @param action - The async function running the action script
  */
 export function runAction(action: () => Promise<unknown>) {
-  action().catch((error: Error) => {
-    core.error(error.stack ?? error.message)
-    core.setFailed(error)
-  })
+    action().catch((error: Error) => {
+        core.error(error.stack ?? error.message)
+        core.setFailed(error)
+    })
 }
 
 /**
@@ -103,11 +82,11 @@ export function runAction(action: () => Promise<unknown>) {
  * @returns stdout
  */
 export async function execReadOutput(commandLine: string, args?: string[]) {
-  let output = ""
-  await exec(commandLine, args, {
-    listeners: { stdout: (data) => (output += data.toString()) },
-  })
-  return output.trim()
+    let output = ''
+    await exec(commandLine, args, {
+        listeners: {stdout: (data) => (output += data.toString())}
+    })
+    return output.trim()
 }
 
 /**
@@ -118,12 +97,12 @@ export async function execReadOutput(commandLine: string, args?: string[]) {
  * @returns isSuccessful
  */
 export async function execIsSuccessful(commandLine: string, args?: string[]) {
-  try {
-    await exec(commandLine, args)
-    return true
-  } catch (e) {
-    return false
-  }
+    try {
+        await exec(commandLine, args)
+        return true
+    } catch (e) {
+        return false
+    }
 }
 
 /**
@@ -132,18 +111,16 @@ export async function execIsSuccessful(commandLine: string, args?: string[]) {
  * @returns branchName
  */
 export function getSanitizedBranchName(ref: string) {
-  const branchName = ref
-    .split("refs/heads/")
-    .pop()
-    ?.replace(/\+|\.|\%|\\|\//g, "-")
-    .toLowerCase()
-    .slice(0, 60)
+    const branchName = ref
+        .split('refs/heads/')
+        .pop()
+        ?.replace(/\+|\.|\%|\\|\//g, '-')
+        .toLowerCase()
+        .slice(0, 60)
 
-  if (!branchName?.trim()) {
-    throw new Error(
-      "Invalid context, could not calculate sanitized branch name",
-    )
-  }
+    if (!branchName?.trim()) {
+        throw new Error('Invalid context, could not calculate sanitized branch name')
+    }
 
-  return branchName
+    return branchName
 }

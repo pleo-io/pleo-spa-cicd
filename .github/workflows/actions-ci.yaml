@@ -1,0 +1,48 @@
+name: Lambda@Edge CI
+on:
+  push:
+    paths:
+      - "actions/**"
+      - ".github/workflows/actions-ci.yml"
+
+concurrency:
+  group: actions-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    working-directory: actions
+
+jobs:
+  test:
+    name: Test & Lint
+    runs-on: [self-hosted, universal]
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v2
+      - uses: bahmutov/npm-install@v1
+        with:
+          working-directory: actions
+      - name: Run tests
+        run: make test
+      - name: Prettier
+        run: yarn prettier -c .
+  check:
+    name: Build & Check
+    runs-on: [self-hosted, universal]
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v2
+      - uses: bahmutov/npm-install@v1
+        with:
+          working-directory: edge-lambdas
+      - name: Build
+        run: make
+      - name: Check if built version is committed
+        run: git diff --quiet --exit-code
+      - uses: actions/github-script@v3
+        if: failure()
+        with:
+          script: core.setFailed('You forgot to build locally!')

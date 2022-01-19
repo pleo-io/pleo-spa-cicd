@@ -2,9 +2,8 @@
 
 ![](./screenshot.png)
 
-Performs a deployment by updating a cursor file in an S3 bucket. This relies on
-infrastructure that uses the cursor files to serve the correct markup to the
-user.
+Performs a deployment by updating a cursor file in an S3 bucket. This relies on infrastructure that
+uses the cursor files to serve the correct markup to the user.
 
 ## Inputs
 
@@ -25,30 +24,30 @@ user.
 ```yml
 - name: Update the cursor file
   id: deployment
-  uses: "pleo-io/frontend-infrastructure/actions/cursor-deploy@v1"
+  uses: 'pleo-io/frontend-infrastructure/actions/cursor-deploy@v1'
   with:
-    bucket_name: my-s3-bucket
+      bucket_name: my-s3-bucket
 ```
 
 ## Rollbacks
 
-The action supports rollbacks with blocking of automatic deployments until an
-explicit action is taken to undo the rollback. You can create a rollback and
-unblock GitHub workflows triggered via repository dispatch.
+The action supports rollbacks with blocking of automatic deployments until an explicit action is
+taken to undo the rollback. You can create a rollback and unblock GitHub workflows triggered via
+repository dispatch.
 
 ```yml
 - name: Update the cursor file
-  uses: "pleo-io/frontend-infrastructure/actions/cursor-deploy@v1"
+  uses: 'pleo-io/frontend-infrastructure/actions/cursor-deploy@v1'
   with:
-    bucket_name: my-s3-bucket
-    deploy_mode: "rollback"
-    rollback_commit_hash: ${{ github.event.inputs.sha }}
+      bucket_name: my-s3-bucket
+      deploy_mode: 'rollback'
+      rollback_commit_hash: ${{ github.event.inputs.sha }}
 ```
 
 ```yml
 - name: Update the cursor file
-  uses: "pleo-io/frontend-infrastructure/actions/cursor-deploy@v1"
+  uses: 'pleo-io/frontend-infrastructure/actions/cursor-deploy@v1'
   with:
-    bucket_name: my-s3-bucket
-    deploy_mode: "unblock"
+      bucket_name: my-s3-bucket
+      deploy_mode: 'unblock'
 ```

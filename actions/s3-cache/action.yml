@@ -1,23 +1,21 @@
-name: "S3 Cache Action"
+name: 'S3 Cache Action'
 description:
-  "Allows to skip a job if it was already performed for the same repo state.
-  Uses S3 for caching."
-author: "Pleo"
+    'Allows to skip a job if it was already performed for the same repo state. Uses S3 for caching.'
+author: 'Pleo'
 inputs:
-  bucket_name:
-    description: Name of the S3 bucket to use for storing cache files
-    required: true
-  key_prefix:
-    description: Key prefix to use for the cache files
-    required: true
+    bucket_name:
+        description: Name of the S3 bucket to use for storing cache files
+        required: true
+    key_prefix:
+        description: Key prefix to use for the cache files
+        required: true
 outputs:
-  processed:
-    description:
-      Indicates if the job has already been performed for the current tree hash
-  hash:
-    description: The tree hash used for caching
+    processed:
+        description: Indicates if the job has already been performed for the current tree hash
+    hash:
+        description: The tree hash used for caching
 runs:
-  using: "node12"
-  main: "dist/restore/index.js"
-  post: "dist/save/index.js"
-  post-if: "success()"
+    using: 'node12'
+    main: 'dist/restore/index.js'
+    post: 'dist/save/index.js'
+    post-if: 'success()'
