@@ -1,4 +1,4 @@
-name: Lambda@Edge CI
+name: GitHub Actions CI
 on:
   push:
     paths:
