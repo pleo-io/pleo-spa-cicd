@@ -2867,12 +2867,12 @@ exports.saveS3Cache = void 0;
 const core = __importStar(__nccwpck_require__(186));
 const utils_1 = __nccwpck_require__(691);
 (0, utils_1.runAction)(() => {
-    const bucket = core.getInput("bucket_name", { required: true });
-    const hash = core.getState("hash");
-    const key = core.getState("key");
+    const bucket = core.getInput('bucket_name', { required: true });
+    const hash = core.getState('hash');
+    const key = core.getState('key');
     return saveS3Cache({ bucket, hash, key });
 });
-function saveS3Cache({ bucket, hash, key, }) {
+function saveS3Cache({ bucket, hash, key }) {
     return __awaiter(this, void 0, void 0, function* () {
         if (!hash || !key) {
             core.info(`Tree hash already processed, skipping saving the cache file.`);
@@ -2935,7 +2935,7 @@ const core = __importStar(__nccwpck_require__(186));
  */
 function getCurrentRepoTreeHash() {
     return __awaiter(this, void 0, void 0, function* () {
-        return execReadOutput("git rev-parse", ["HEAD:"]);
+        return execReadOutput('git rev-parse', ['HEAD:']);
     });
 }
 exports.getCurrentRepoTreeHash = getCurrentRepoTreeHash;
@@ -2946,12 +2946,9 @@ exports.getCurrentRepoTreeHash = getCurrentRepoTreeHash;
  * @param options.bucket - The name of the S3 bucket (globally unique)
  * @returns fileExists - boolean indicating if the file exists
  */
-function fileExistsInS3({ key, bucket, }) {
+function fileExistsInS3({ key, bucket }) {
     return __awaiter(this, void 0, void 0, function* () {
-        return execIsSuccessful("aws s3api head-object", [
-            `--bucket=${bucket}`,
-            `--key=${key}`,
-        ]);
+        return execIsSuccessful('aws s3api head-object', [`--bucket=${bucket}`, `--key=${key}`]);
     });
 }
 exports.fileExistsInS3 = fileExistsInS3;
@@ -2962,7 +2959,7 @@ exports.fileExistsInS3 = fileExistsInS3;
  * @param options.path - The local path of the file (relative to working dir)
  * @returns exitCode - shell command exit code
  */
-function writeLineToFile({ text, path, }) {
+function writeLineToFile({ text, path }) {
     return __awaiter(this, void 0, void 0, function* () {
         return (0, exec_1.exec)(`/bin/bash -c "echo ${text} > ${path}"`);
     });
@@ -2976,9 +2973,9 @@ exports.writeLineToFile = writeLineToFile;
  * @param options.bucket - The name of the S3 bucket (globally unique)
  * @returns exitCode - shell command exit code
  */
-function copyFileToS3({ path, key, bucket, }) {
+function copyFileToS3({ path, key, bucket }) {
     return __awaiter(this, void 0, void 0, function* () {
-        return (0, exec_1.exec)("aws s3 cp", [path, `s3://${bucket}/${key}`]);
+        return (0, exec_1.exec)('aws s3 cp', [path, `s3://${bucket}/${key}`]);
     });
 }
 exports.copyFileToS3 = copyFileToS3;
@@ -2989,9 +2986,9 @@ exports.copyFileToS3 = copyFileToS3;
  * @param options.bucket - The name of the S3 bucket (globally unique)
  * @returns exitCode - shell command exit code
  */
-function removeFileFromS3({ key, bucket, }) {
+function removeFileFromS3({ key, bucket }) {
     return __awaiter(this, void 0, void 0, function* () {
-        return (0, exec_1.exec)("aws s3 rm", [`s3://${bucket}/${key}`]);
+        return (0, exec_1.exec)('aws s3 rm', [`s3://${bucket}/${key}`]);
     });
 }
 exports.removeFileFromS3 = removeFileFromS3;
@@ -3015,9 +3012,9 @@ exports.runAction = runAction;
  */
 function execReadOutput(commandLine, args) {
     return __awaiter(this, void 0, void 0, function* () {
-        let output = "";
+        let output = '';
         yield (0, exec_1.exec)(commandLine, args, {
-            listeners: { stdout: (data) => (output += data.toString()) },
+            listeners: { stdout: (data) => (output += data.toString()) }
         });
         return output.trim();
     });
@@ -3050,10 +3047,10 @@ exports.execIsSuccessful = execIsSuccessful;
 function getSanitizedBranchName(ref) {
     var _a;
     const branchName = (_a = ref
-        .split("refs/heads/")
-        .pop()) === null || _a === void 0 ? void 0 : _a.replace(/\+|\.|\%|\\|\//g, "-").toLowerCase().slice(0, 60);
+        .split('refs/heads/')
+        .pop()) === null || _a === void 0 ? void 0 : _a.replace(/\+|\.|\%|\\|\//g, '-').toLowerCase().slice(0, 60);
     if (!(branchName === null || branchName === void 0 ? void 0 : branchName.trim())) {
-        throw new Error("Invalid context, could not calculate sanitized branch name");
+        throw new Error('Invalid context, could not calculate sanitized branch name');
     }
     return branchName;
 }

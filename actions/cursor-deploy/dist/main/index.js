@@ -9611,20 +9611,20 @@ exports.cursorDeploy = void 0;
 const core = __importStar(__nccwpck_require__(2186));
 const github = __importStar(__nccwpck_require__(5438));
 const utils_1 = __nccwpck_require__(691);
-const deployModes = ["default", "rollback", "unblock"];
+const deployModes = ['default', 'rollback', 'unblock'];
 (0, utils_1.runAction)(() => __awaiter(void 0, void 0, void 0, function* () {
-    const bucket = core.getInput("bucket_name", { required: true });
-    const deployModeInput = core.getInput("deploy_mode", { required: true });
-    const rollbackCommitHash = core.getInput("rollback_commit_hash");
+    const bucket = core.getInput('bucket_name', { required: true });
+    const deployModeInput = core.getInput('deploy_mode', { required: true });
+    const rollbackCommitHash = core.getInput('rollback_commit_hash');
     const output = yield cursorDeploy({
         bucket,
         deployModeInput,
         rollbackCommitHash,
-        ref: github.context.ref,
+        ref: github.context.ref
     });
-    core.setOutput("tree_hash", output.treeHash);
+    core.setOutput('tree_hash', output.treeHash);
 }));
-function cursorDeploy({ ref, bucket, deployModeInput, rollbackCommitHash, }) {
+function cursorDeploy({ ref, bucket, deployModeInput, rollbackCommitHash }) {
     return __awaiter(this, void 0, void 0, function* () {
         const deployMode = getDeployMode(deployModeInput);
         const branchName = (0, utils_1.getSanitizedBranchName)(ref);
@@ -9634,10 +9634,10 @@ function cursorDeploy({ ref, bucket, deployModeInput, rollbackCommitHash, }) {
         // If we're doing a regular deployment, we need to make sure there isn't an active
         // rollback for the branch we're deploying. Active rollback prevents automatic
         // deployments and requires an explicit unblocking deployment to resume them.
-        if (deployMode === "default") {
+        if (deployMode === 'default') {
             const rollbackFileExists = yield (0, utils_1.fileExistsInS3)({
                 bucket,
-                key: rollbackKey,
+                key: rollbackKey
             });
             if (rollbackFileExists) {
                 throw new Error(`${branchName} is currently blocked due to an active rollback.`);
@@ -9650,13 +9650,13 @@ function cursorDeploy({ ref, bucket, deployModeInput, rollbackCommitHash, }) {
         core.info(`Tree hash ${treeHash} is now the active deployment for ${branchName}.`);
         // If we're doing a rollback deployment we create a rollback file that blocks any following
         // deployments from going through.
-        if (deployMode === "rollback") {
+        if (deployMode === 'rollback') {
             yield (0, utils_1.copyFileToS3)({ path: branchName, bucket, key: rollbackKey });
             core.info(`${branchName} marked as rolled back, automatic deploys paused.`);
         }
         // If we're doing an unblock deployment, we delete the rollback file to allow the following
         // deployments to go through
-        if (deployMode === "unblock") {
+        if (deployMode === 'unblock') {
             yield (0, utils_1.removeFileFromS3)({ bucket, key: rollbackKey });
             core.info(`${branchName} has automatic deploys resumed.`);
         }
@@ -9694,12 +9694,12 @@ function getDeployMode(deployMode) {
  */
 function getDeploymentHash(deployMode, rollbackCommitHash) {
     return __awaiter(this, void 0, void 0, function* () {
-        if (deployMode === "rollback") {
+        if (deployMode === 'rollback') {
             if (!!rollbackCommitHash && !isHeadAncestor(rollbackCommitHash)) {
-                throw new Error("The selected rollback commit is not present on the branch");
+                throw new Error('The selected rollback commit is not present on the branch');
             }
             // If no rollback commit is provided, we default to the previous commit on the branch
-            const commit = rollbackCommitHash || "HEAD^";
+            const commit = rollbackCommitHash || 'HEAD^';
             const treeHash = yield getTreeHashForCommitHash(commit);
             core.info(`Rolling back to tree hash ${treeHash} (commit ${commit})`);
             return treeHash;
@@ -9716,11 +9716,7 @@ function getDeploymentHash(deployMode, rollbackCommitHash) {
  */
 function isHeadAncestor(commitHash) {
     return __awaiter(this, void 0, void 0, function* () {
-        return (0, utils_1.execIsSuccessful)("git merge-base", [
-            `--is-ancestor`,
-            commitHash,
-            `HEAD`,
-        ]);
+        return (0, utils_1.execIsSuccessful)('git merge-base', [`--is-ancestor`, commitHash, `HEAD`]);
     });
 }
 /**
@@ -9730,7 +9726,7 @@ function isHeadAncestor(commitHash) {
  */
 function getTreeHashForCommitHash(commit) {
     return __awaiter(this, void 0, void 0, function* () {
-        return (0, utils_1.execReadOutput)("git rev-parse", [`${commit}:`]);
+        return (0, utils_1.execReadOutput)('git rev-parse', [`${commit}:`]);
     });
 }
 
@@ -9782,7 +9778,7 @@ const core = __importStar(__nccwpck_require__(2186));
  */
 function getCurrentRepoTreeHash() {
     return __awaiter(this, void 0, void 0, function* () {
-        return execReadOutput("git rev-parse", ["HEAD:"]);
+        return execReadOutput('git rev-parse', ['HEAD:']);
     });
 }
 exports.getCurrentRepoTreeHash = getCurrentRepoTreeHash;
@@ -9793,12 +9789,9 @@ exports.getCurrentRepoTreeHash = getCurrentRepoTreeHash;
  * @param options.bucket - The name of the S3 bucket (globally unique)
  * @returns fileExists - boolean indicating if the file exists
  */
-function fileExistsInS3({ key, bucket, }) {
+function fileExistsInS3({ key, bucket }) {
     return __awaiter(this, void 0, void 0, function* () {
-        return execIsSuccessful("aws s3api head-object", [
-            `--bucket=${bucket}`,
-            `--key=${key}`,
-        ]);
+        return execIsSuccessful('aws s3api head-object', [`--bucket=${bucket}`, `--key=${key}`]);
     });
 }
 exports.fileExistsInS3 = fileExistsInS3;
@@ -9809,7 +9802,7 @@ exports.fileExistsInS3 = fileExistsInS3;
  * @param options.path - The local path of the file (relative to working dir)
  * @returns exitCode - shell command exit code
  */
-function writeLineToFile({ text, path, }) {
+function writeLineToFile({ text, path }) {
     return __awaiter(this, void 0, void 0, function* () {
         return (0, exec_1.exec)(`/bin/bash -c "echo ${text} > ${path}"`);
     });
@@ -9823,9 +9816,9 @@ exports.writeLineToFile = writeLineToFile;
  * @param options.bucket - The name of the S3 bucket (globally unique)
  * @returns exitCode - shell command exit code
  */
-function copyFileToS3({ path, key, bucket, }) {
+function copyFileToS3({ path, key, bucket }) {
     return __awaiter(this, void 0, void 0, function* () {
-        return (0, exec_1.exec)("aws s3 cp", [path, `s3://${bucket}/${key}`]);
+        return (0, exec_1.exec)('aws s3 cp', [path, `s3://${bucket}/${key}`]);
     });
 }
 exports.copyFileToS3 = copyFileToS3;
@@ -9836,9 +9829,9 @@ exports.copyFileToS3 = copyFileToS3;
  * @param options.bucket - The name of the S3 bucket (globally unique)
  * @returns exitCode - shell command exit code
  */
-function removeFileFromS3({ key, bucket, }) {
+function removeFileFromS3({ key, bucket }) {
     return __awaiter(this, void 0, void 0, function* () {
-        return (0, exec_1.exec)("aws s3 rm", [`s3://${bucket}/${key}`]);
+        return (0, exec_1.exec)('aws s3 rm', [`s3://${bucket}/${key}`]);
     });
 }
 exports.removeFileFromS3 = removeFileFromS3;
@@ -9862,9 +9855,9 @@ exports.runAction = runAction;
  */
 function execReadOutput(commandLine, args) {
     return __awaiter(this, void 0, void 0, function* () {
-        let output = "";
+        let output = '';
         yield (0, exec_1.exec)(commandLine, args, {
-            listeners: { stdout: (data) => (output += data.toString()) },
+            listeners: { stdout: (data) => (output += data.toString()) }
         });
         return output.trim();
     });
@@ -9897,10 +9890,10 @@ exports.execIsSuccessful = execIsSuccessful;
 function getSanitizedBranchName(ref) {
     var _a;
     const branchName = (_a = ref
-        .split("refs/heads/")
-        .pop()) === null || _a === void 0 ? void 0 : _a.replace(/\+|\.|\%|\\|\//g, "-").toLowerCase().slice(0, 60);
+        .split('refs/heads/')
+        .pop()) === null || _a === void 0 ? void 0 : _a.replace(/\+|\.|\%|\\|\//g, '-').toLowerCase().slice(0, 60);
     if (!(branchName === null || branchName === void 0 ? void 0 : branchName.trim())) {
-        throw new Error("Invalid context, could not calculate sanitized branch name");
+        throw new Error('Invalid context, could not calculate sanitized branch name');
     }
     return branchName;
 }

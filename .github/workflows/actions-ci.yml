@@ -39,7 +39,7 @@ jobs:
         with:
           working-directory: actions
       - name: Build
-        run: make
+        run: make build
       - name: Check if built version is committed
         run: |
           git diff --quiet --exit-code || echo "::error::You forgot to commit the built actions" && exit 1
