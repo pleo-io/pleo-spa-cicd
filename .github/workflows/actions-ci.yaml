@@ -37,7 +37,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: bahmutov/npm-install@v1
         with:
-          working-directory: edge-lambdas
+          working-directory: actions
       - name: Build
         run: make
       - name: Check if built version is committed
