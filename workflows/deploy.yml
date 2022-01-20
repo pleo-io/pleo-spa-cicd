@@ -82,6 +82,7 @@ jobs:
         uses: bahmutov/npm-install@v1
         with:
           useRollingCache: true
+          install-command: yarn --frozen-lockfile --ignore-scripts
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GH_REGISTRY_NPM_TOKEN }}
 
