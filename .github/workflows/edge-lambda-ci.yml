@@ -24,6 +24,7 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v2
+      - run: npm config list
       - name: Install Dependencies
         run: yarn --frozen-lockfile
         env:
