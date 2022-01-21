@@ -19,7 +19,7 @@ defaults:
 jobs:
   test:
     name: Test
-    runs-on: [self-hosted, feature-deploy-universal]
+    runs-on: [self-hosted, universal]
     permissions:
       contents: read
     steps:
@@ -34,8 +34,8 @@ jobs:
         run: make test
   upload:
     name: Build & Upload
-    runs-on: [self-hosted, feature-deploy-universal]
-    if: github.ref == 'refs/heads/master'
+    runs-on: [self-hosted, universal]
+    if: github.ref == 'refs/heads/main'
     permissions:
       contents: read
     steps:
