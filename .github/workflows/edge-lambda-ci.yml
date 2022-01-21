@@ -19,13 +19,14 @@ defaults:
 jobs:
   test:
     name: Test
-    runs-on: [self-hosted, universal]
+    runs-on: [self-hosted, feature-deploy-universal]
     permissions:
       contents: read
     steps:
       - uses: actions/checkout@v2
       - run: npm config list
       - run: node --version
+      - run: ls  -al $HOME
       - name: Install Dependencies
         run: yarn --frozen-lockfile
         env:
@@ -34,7 +35,7 @@ jobs:
         run: make test
   upload:
     name: Build & Upload
-    runs-on: [self-hosted, universal]
+    runs-on: [self-hosted, feature-deploy-universal]
     if: github.ref == 'refs/heads/main'
     permissions:
       contents: read
