@@ -19,16 +19,11 @@ defaults:
 jobs:
   test:
     name: Test
-    runs-on: [self-hosted, universal]
+    runs-on: [self-hosted, feature-deploy-universal]
     permissions:
       contents: read
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
-        with:
-          node-version: "16"
-          registry-url: "https://npm.pkg.github.com"
-          scope: "@pleo-io"
       - name: Install Dependencies
         uses: bahmutov/npm-install@v1
         with:
@@ -39,17 +34,12 @@ jobs:
         run: make test
   upload:
     name: Build & Upload
-    runs-on: [self-hosted, universal]
+    runs-on: [self-hosted, feature-deploy-universal]
     if: github.ref == 'refs/heads/master'
     permissions:
       contents: read
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
-        with:
-          node-version: "16"
-          registry-url: "https://npm.pkg.github.com"
-          scope: "@pleo-io"
       - uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
