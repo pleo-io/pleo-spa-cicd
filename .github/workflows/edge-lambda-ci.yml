@@ -25,9 +25,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Install Dependencies
-        uses: bahmutov/npm-install@v1
-        with:
-          working-directory: edge-lambdas
+        run: yarn --frozen-lockfile
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GH_REGISTRY_NPM_TOKEN }}
       - name: Run tests
