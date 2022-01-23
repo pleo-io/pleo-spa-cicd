@@ -66,13 +66,13 @@ describe(`Cursor Deploy Action`, () => {
             rollbackCommitHash: ''
         })
 
-        expectRollbackFileChecked('my-bucket', 'rollbacks/lol-my-feature-branch-30--better')
+        expectRollbackFileChecked('my-bucket', 'rollbacks/lol-my-feature-branch-30-better')
 
         expectCursorFileUpdated({
             treeHash: '553b0cb96ac21ffc0583e5d8d72343b1faa90dfd',
-            branch: 'lol-my-feature-branch-30--better',
+            branch: 'lol-my-feature-branch-30-better',
             bucket: 'my-bucket',
-            key: 'deploys/lol-my-feature-branch-30--better'
+            key: 'deploys/lol-my-feature-branch-30-better'
         })
 
         expect(output.treeHash).toBe('553b0cb96ac21ffc0583e5d8d72343b1faa90dfd')
