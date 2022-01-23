@@ -8,7 +8,11 @@ jest.mock('../utils')
 afterEach(() => jest.clearAllMocks())
 
 describe(`S3 Cache Action - Restore cache`, () => {
-    test(`Not processed yet`, async () => {
+    test(`
+        When a cache file in S3 doesn't exists
+        Then it should return a "false" processed flag
+        And it should return the S3 key and tree hash used 
+    `, async () => {
         mockedUtils.getCurrentRepoTreeHash.mockResolvedValue(
             'b017ebdf289ba78787da4e9c3291f0b7959e7059'
         )
@@ -30,7 +34,11 @@ describe(`S3 Cache Action - Restore cache`, () => {
         })
     })
 
-    test(`Processed already`, async () => {
+    test(`
+        When a cache file in S3 already exists
+        Then it should return a "true" processed flag
+        And it should return the S3 key and tree hash used
+    `, async () => {
         mockedUtils.getCurrentRepoTreeHash.mockResolvedValue(
             'cba2d570993b9c21e3de282e5ba56d1638fb32de'
         )

@@ -8,7 +8,10 @@ jest.mock('../utils')
 afterEach(() => jest.clearAllMocks())
 
 describe(`S3 Cache Action - Save cache`, () => {
-    test(`Not processed yet`, async () => {
+    test(`
+        When no cache file in S3 exists
+        Then it should write the cache file to S3
+    `, async () => {
         await saveS3Cache({
             bucket: 'my-bucket',
             hash: '5948809b966891c558d7c79c0c5c401502f1a466',
@@ -29,7 +32,10 @@ describe(`S3 Cache Action - Save cache`, () => {
         })
     })
 
-    test(`Already processed`, async () => {
+    test(`
+        When a cache file in S3 already exists
+        Then it should no create any new files
+    `, async () => {
         await saveS3Cache({
             bucket: 'my-bucket',
             hash: '',

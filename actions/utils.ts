@@ -114,11 +114,13 @@ export function getSanitizedBranchName(ref: string) {
     const branchName = ref
         .split('refs/heads/')
         .pop()
-        ?.replace(/\+|\.|\%|\\|\//g, '-')
+        ?.replace(/[^\w]/gi, '-') // replace all non-word characters with a "-"
+        .replace(/-{2,}/gi, '-') // get rid of multiple consecutive "-"
         .toLowerCase()
         .slice(0, 60)
+        .trim()
 
-    if (!branchName?.trim()) {
+    if (!branchName) {
         throw new Error('Invalid context, could not calculate sanitized branch name')
     }
 

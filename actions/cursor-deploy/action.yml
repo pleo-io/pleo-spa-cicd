@@ -3,7 +3,7 @@ description: 'Deploy the new version of the app by modifying the cursor file for
 author: 'Pleo'
 inputs:
     rollback_commit_hash:
-        description: Commit hash to roll back to to, defaults to previous commit on the branch
+        description: Commit hash to roll back to, defaults to the previous commit on the branch
         required: false
     bucket_name:
         description: Bucket to use for deployments

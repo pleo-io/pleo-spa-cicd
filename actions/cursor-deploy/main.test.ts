@@ -16,7 +16,13 @@ const originalUtils = jest.requireActual('../utils')
 mockedUtils.getSanitizedBranchName.mockImplementation(originalUtils.getSanitizedBranchName)
 
 describe(`Cursor Deploy Action`, () => {
-    test(`Default deploy mode, default branch in staging`, async () => {
+    test(`
+        When the action runs in the default deploy mode
+        And the the action runs on the default branch
+        And there is no active rollback on that branch/env
+        Then the cursor file for the master branch is updated
+        And the tree hash used is the current repo tree hash
+    `, async () => {
         mockedUtils.getCurrentRepoTreeHash.mockResolvedValue(
             'b017ebdf289ba78787da4e9c3291f0b7959e7059'
         )
@@ -41,32 +47,13 @@ describe(`Cursor Deploy Action`, () => {
         expect(output.treeHash).toBe('b017ebdf289ba78787da4e9c3291f0b7959e7059')
     })
 
-    test(`Default deploy mode, default branch in production`, async () => {
-        mockedUtils.getCurrentRepoTreeHash.mockResolvedValue(
-            'aeb3b2fa5391a143560922934cc654c187a15774'
-        )
-        mockedUtils.fileExistsInS3.mockResolvedValue(false)
-
-        const output = await cursorDeploy({
-            bucket: 'my-prod-bucket',
-            deployModeInput: 'default',
-            ref: 'refs/heads/master',
-            rollbackCommitHash: ''
-        })
-
-        expectRollbackFileChecked('my-prod-bucket', 'rollbacks/master')
-
-        expectCursorFileUpdated({
-            treeHash: 'aeb3b2fa5391a143560922934cc654c187a15774',
-            branch: 'master',
-            bucket: 'my-prod-bucket',
-            key: 'deploys/master'
-        })
-
-        expect(output.treeHash).toBe('aeb3b2fa5391a143560922934cc654c187a15774')
-    })
-
-    test(`Default deploy mode, feature branch in staging`, async () => {
+    test(`
+        When the action runs in the default deploy mode
+        And the the action runs on a feature branch
+        And there is no active rollback on that branch/env
+        Then the cursor file for the feature branch is updated
+        And the tree hash used is the current repo tree hash
+    `, async () => {
         mockedUtils.getCurrentRepoTreeHash.mockResolvedValue(
             '553b0cb96ac21ffc0583e5d8d72343b1faa90dfd'
         )
@@ -91,7 +78,12 @@ describe(`Cursor Deploy Action`, () => {
         expect(output.treeHash).toBe('553b0cb96ac21ffc0583e5d8d72343b1faa90dfd')
     })
 
-    test(`Default deploy mode, existing rollback`, async () => {
+    test(`
+        When the action runs in the default deploy mode
+        And there is an active rollback on that branch/env
+        Then the cursor file for the feature branch is not updated
+        And the action returns a error
+    `, async () => {
         mockedUtils.getCurrentRepoTreeHash.mockResolvedValue(
             'b017ebdf289ba78787da4e9c3291f0b7959e7059'
         )
@@ -115,7 +107,12 @@ describe(`Cursor Deploy Action`, () => {
         expect(mockedUtils.copyFileToS3).not.toHaveBeenCalled()
     })
 
-    test(`Rollback deploy mode, default branch in production, no explicit commit SHA`, async () => {
+    test(`
+        When the action runs in the rollback deploy mode
+        And no specific rollback hash is provided
+        Then the cursor file is updated
+        And the tree hash used is the previous commit tree hash
+    `, async () => {
         mockedUtils.getCurrentRepoTreeHash.mockResolvedValue(
             'b017ebdf289ba78787da4e9c3291f0b7959e7059'
         )
@@ -155,7 +152,12 @@ describe(`Cursor Deploy Action`, () => {
         expect(output.treeHash).toBe('32439d157a7e346d117a6a3c47d511526bd45012')
     })
 
-    test(`Rollback deploy mode, default branch in staging, explicit commit SHA`, async () => {
+    test(`
+        When the action runs in the rollback deploy mode
+        And a specific rollback hash is provided
+        Then the cursor file is updated
+        And the tree hash used is the tree hash of the passed commit hash
+    `, async () => {
         mockedUtils.getCurrentRepoTreeHash.mockResolvedValue(
             'b017ebdf289ba78787da4e9c3291f0b7959e7059'
         )
