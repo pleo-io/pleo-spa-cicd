@@ -33,7 +33,8 @@ runAction(async () => {
         bucket,
         deployModeInput,
         rollbackCommitHash,
-        ref: github.context.ref
+        ref: github.context.ref,
+        repo: github.context.repo
     })
 
     core.setOutput('tree_hash', output.treeHash)
@@ -44,20 +45,22 @@ interface CursorDeployActionArgs {
     deployModeInput: string
     rollbackCommitHash: string
     ref: string
+    repo: {owner: string; repo: string}
 }
 
 export async function cursorDeploy({
     ref,
     bucket,
     deployModeInput,
-    rollbackCommitHash
+    rollbackCommitHash,
+    repo
 }: CursorDeployActionArgs) {
     const deployMode = getDeployMode(deployModeInput)
     const branchName = getSanitizedBranchName(ref)
     const treeHash = await getDeploymentHash(deployMode, rollbackCommitHash)
 
-    const rollbackKey = `rollbacks/${branchName}`
-    const deployKey = `deploys/${branchName}`
+    const rollbackKey = `${repo.owner}/${repo.repo}/rollbacks/${branchName}`
+    const deployKey = `${repo.owner}/${repo.repo}/deploys/${branchName}`
 
     // If we're doing a regular deployment, we need to make sure there isn't an active
     // rollback for the branch we're deploying. Active rollback prevents automatic

@@ -7,13 +7,15 @@
  */
 
 import * as core from '@actions/core'
+import * as github from '@actions/github'
 import {getCurrentRepoTreeHash, fileExistsInS3, runAction} from '../utils'
 
 runAction(async () => {
     const bucket = core.getInput('bucket_name', {required: true})
     const keyPrefix = core.getInput('key_prefix', {required: true})
+    const repo = github.context.repo
 
-    const output = await restoreS3Cache({bucket, keyPrefix})
+    const output = await restoreS3Cache({bucket, keyPrefix, repo})
 
     // Saving key and hash in "state" which can be retrieved by the
     // "post" run of the action (save.ts)
@@ -25,10 +27,16 @@ runAction(async () => {
     core.setOutput('hash', output.treeHash)
 })
 
-export async function restoreS3Cache({bucket, keyPrefix}: {bucket: string; keyPrefix: string}) {
+type RestoreS3CacheActionArgs = {
+    bucket: string
+    keyPrefix: string
+    repo: {owner: string; repo: string}
+}
+
+export async function restoreS3Cache({bucket, keyPrefix, repo}: RestoreS3CacheActionArgs) {
     const treeHash = await getCurrentRepoTreeHash()
 
-    const key = `${keyPrefix}/${treeHash}`
+    const key = `${repo.owner}/${repo.repo}/cache/${keyPrefix}/${treeHash}`
     const fileExists = await fileExistsInS3({key, bucket})
 
     if (fileExists) {

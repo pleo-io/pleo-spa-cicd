@@ -9620,17 +9620,18 @@ const deployModes = ['default', 'rollback', 'unblock'];
         bucket,
         deployModeInput,
         rollbackCommitHash,
-        ref: github.context.ref
+        ref: github.context.ref,
+        repo: github.context.repo
     });
     core.setOutput('tree_hash', output.treeHash);
 }));
-function cursorDeploy({ ref, bucket, deployModeInput, rollbackCommitHash }) {
+function cursorDeploy({ ref, bucket, deployModeInput, rollbackCommitHash, repo }) {
     return __awaiter(this, void 0, void 0, function* () {
         const deployMode = getDeployMode(deployModeInput);
         const branchName = (0, utils_1.getSanitizedBranchName)(ref);
         const treeHash = yield getDeploymentHash(deployMode, rollbackCommitHash);
-        const rollbackKey = `rollbacks/${branchName}`;
-        const deployKey = `deploys/${branchName}`;
+        const rollbackKey = `${repo.owner}/${repo.repo}/rollbacks/${branchName}`;
+        const deployKey = `${repo.owner}/${repo.repo}/deploys/${branchName}`;
         // If we're doing a regular deployment, we need to make sure there isn't an active
         // rollback for the branch we're deploying. Active rollback prevents automatic
         // deployments and requires an explicit unblocking deployment to resume them.
@@ -9891,8 +9892,8 @@ function getSanitizedBranchName(ref) {
     var _a;
     const branchName = (_a = ref
         .split('refs/heads/')
-        .pop()) === null || _a === void 0 ? void 0 : _a.replace(/\+|\.|\%|\\|\//g, '-').toLowerCase().slice(0, 60);
-    if (!(branchName === null || branchName === void 0 ? void 0 : branchName.trim())) {
+        .pop()) === null || _a === void 0 ? void 0 : _a.replace(/[^\w]/gi, '-').replace(/-{2,}/gi, '-').toLowerCase().slice(0, 60).trim();
+    if (!branchName) {
         throw new Error('Invalid context, could not calculate sanitized branch name');
     }
     return branchName;

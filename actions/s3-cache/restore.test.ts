@@ -20,17 +20,20 @@ describe(`S3 Cache Action - Restore cache`, () => {
 
         const output = await restoreS3Cache({
             bucket: 'my-bucket',
-            keyPrefix: 'cache/horse'
+            keyPrefix: 'horse',
+            repo: {owner: 'my-org', repo: 'my-repo'}
         })
 
-        expect(output.key).toBe('cache/horse/b017ebdf289ba78787da4e9c3291f0b7959e7059')
+        expect(output.key).toBe(
+            'my-org/my-repo/cache/horse/b017ebdf289ba78787da4e9c3291f0b7959e7059'
+        )
         expect(output.processed).toBe(false)
         expect(output.treeHash).toBe('b017ebdf289ba78787da4e9c3291f0b7959e7059')
 
         expect(mockedUtils.fileExistsInS3).toHaveBeenCalledTimes(1)
         expect(mockedUtils.fileExistsInS3).toHaveBeenCalledWith({
             bucket: 'my-bucket',
-            key: 'cache/horse/b017ebdf289ba78787da4e9c3291f0b7959e7059'
+            key: 'my-org/my-repo/cache/horse/b017ebdf289ba78787da4e9c3291f0b7959e7059'
         })
     })
 
@@ -46,17 +49,20 @@ describe(`S3 Cache Action - Restore cache`, () => {
 
         const output = await restoreS3Cache({
             bucket: 'my-other-bucket',
-            keyPrefix: 'cache/horse'
+            keyPrefix: 'horse',
+            repo: {owner: 'my-org', repo: 'my-repo'}
         })
 
-        expect(output.key).toBe('cache/horse/cba2d570993b9c21e3de282e5ba56d1638fb32de')
+        expect(output.key).toBe(
+            'my-org/my-repo/cache/horse/cba2d570993b9c21e3de282e5ba56d1638fb32de'
+        )
         expect(output.processed).toBe(true)
         expect(output.treeHash).toBe('cba2d570993b9c21e3de282e5ba56d1638fb32de')
 
         expect(mockedUtils.fileExistsInS3).toHaveBeenCalledTimes(1)
         expect(mockedUtils.fileExistsInS3).toHaveBeenCalledWith({
             bucket: 'my-other-bucket',
-            key: 'cache/horse/cba2d570993b9c21e3de282e5ba56d1638fb32de'
+            key: 'my-org/my-repo/cache/horse/cba2d570993b9c21e3de282e5ba56d1638fb32de'
         })
     })
 })

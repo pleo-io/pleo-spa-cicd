@@ -3048,8 +3048,8 @@ function getSanitizedBranchName(ref) {
     var _a;
     const branchName = (_a = ref
         .split('refs/heads/')
-        .pop()) === null || _a === void 0 ? void 0 : _a.replace(/\+|\.|\%|\\|\//g, '-').toLowerCase().slice(0, 60);
-    if (!(branchName === null || branchName === void 0 ? void 0 : branchName.trim())) {
+        .pop()) === null || _a === void 0 ? void 0 : _a.replace(/[^\w]/gi, '-').replace(/-{2,}/gi, '-').toLowerCase().slice(0, 60).trim();
+    if (!branchName) {
         throw new Error('Invalid context, could not calculate sanitized branch name');
     }
     return branchName;

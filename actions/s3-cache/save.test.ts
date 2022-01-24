@@ -15,7 +15,7 @@ describe(`S3 Cache Action - Save cache`, () => {
         await saveS3Cache({
             bucket: 'my-bucket',
             hash: '5948809b966891c558d7c79c0c5c401502f1a466',
-            key: 'cache/horse'
+            key: 'my-org/my-repo/cache/horse'
         })
 
         expect(mockedUtils.writeLineToFile).toHaveBeenCalledTimes(1)
@@ -28,7 +28,7 @@ describe(`S3 Cache Action - Save cache`, () => {
         expect(mockedUtils.copyFileToS3).toHaveBeenCalledWith({
             path: '5948809b966891c558d7c79c0c5c401502f1a466',
             bucket: 'my-bucket',
-            key: 'cache/horse'
+            key: 'my-org/my-repo/cache/horse'
         })
     })
 

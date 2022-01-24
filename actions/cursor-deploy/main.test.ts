@@ -32,16 +32,17 @@ describe(`Cursor Deploy Action`, () => {
             bucket: 'my-bucket',
             deployModeInput: 'default',
             ref: 'refs/heads/master',
-            rollbackCommitHash: ''
+            rollbackCommitHash: '',
+            repo: {owner: 'my-org', repo: 'my-repo'}
         })
 
-        expectRollbackFileChecked('my-bucket', 'rollbacks/master')
+        expectRollbackFileChecked('my-bucket', 'my-org/my-repo/rollbacks/master')
 
         expectCursorFileUpdated({
             treeHash: 'b017ebdf289ba78787da4e9c3291f0b7959e7059',
             branch: 'master',
             bucket: 'my-bucket',
-            key: 'deploys/master'
+            key: 'my-org/my-repo/deploys/master'
         })
 
         expect(output.treeHash).toBe('b017ebdf289ba78787da4e9c3291f0b7959e7059')
@@ -63,16 +64,20 @@ describe(`Cursor Deploy Action`, () => {
             bucket: 'my-bucket',
             deployModeInput: 'default',
             ref: 'refs/heads/lol/my-feature-branch-30%-better',
-            rollbackCommitHash: ''
+            rollbackCommitHash: '',
+            repo: {owner: 'my-org', repo: 'my-repo'}
         })
 
-        expectRollbackFileChecked('my-bucket', 'rollbacks/lol-my-feature-branch-30-better')
+        expectRollbackFileChecked(
+            'my-bucket',
+            'my-org/my-repo/rollbacks/lol-my-feature-branch-30-better'
+        )
 
         expectCursorFileUpdated({
             treeHash: '553b0cb96ac21ffc0583e5d8d72343b1faa90dfd',
             branch: 'lol-my-feature-branch-30-better',
             bucket: 'my-bucket',
-            key: 'deploys/lol-my-feature-branch-30-better'
+            key: 'my-org/my-repo/deploys/lol-my-feature-branch-30-better'
         })
 
         expect(output.treeHash).toBe('553b0cb96ac21ffc0583e5d8d72343b1faa90dfd')
@@ -93,7 +98,8 @@ describe(`Cursor Deploy Action`, () => {
             bucket: 'my-bucket',
             deployModeInput: 'default',
             ref: 'refs/heads/master',
-            rollbackCommitHash: ''
+            rollbackCommitHash: '',
+            repo: {owner: 'my-org', repo: 'my-repo'}
         })
 
         expect(promise).rejects.toEqual(
@@ -101,7 +107,7 @@ describe(`Cursor Deploy Action`, () => {
         )
 
         await promise.catch((error) => error)
-        expectRollbackFileChecked('my-bucket', 'rollbacks/master')
+        expectRollbackFileChecked('my-bucket', 'my-org/my-repo/rollbacks/master')
 
         expect(mockedUtils.writeLineToFile).not.toHaveBeenCalled()
         expect(mockedUtils.copyFileToS3).not.toHaveBeenCalled()
@@ -124,7 +130,8 @@ describe(`Cursor Deploy Action`, () => {
             bucket: 'my-prod-bucket',
             deployModeInput: 'rollback',
             ref: 'refs/heads/master',
-            rollbackCommitHash: ''
+            rollbackCommitHash: '',
+            repo: {owner: 'my-org', repo: 'my-repo'}
         })
 
         expect(mockedUtils.fileExistsInS3).not.toHaveBeenCalled()
@@ -140,13 +147,13 @@ describe(`Cursor Deploy Action`, () => {
         expect(mockedUtils.copyFileToS3).toHaveBeenCalledWith({
             path: 'master',
             bucket: 'my-prod-bucket',
-            key: 'deploys/master'
+            key: 'my-org/my-repo/deploys/master'
         })
 
         expect(mockedUtils.copyFileToS3).toHaveBeenLastCalledWith({
             path: 'master',
             bucket: 'my-prod-bucket',
-            key: 'rollbacks/master'
+            key: 'my-org/my-repo/rollbacks/master'
         })
 
         expect(output.treeHash).toBe('32439d157a7e346d117a6a3c47d511526bd45012')
@@ -169,7 +176,8 @@ describe(`Cursor Deploy Action`, () => {
             bucket: 'my-bucket',
             deployModeInput: 'rollback',
             rollbackCommitHash: 'fc24d309398cbf6d53237e05e4d2a8cd2de57cc7',
-            ref: 'refs/heads/master'
+            ref: 'refs/heads/master',
+            repo: {owner: 'my-org', repo: 'my-repo'}
         })
 
         expect(mockedUtils.fileExistsInS3).not.toHaveBeenCalled()
@@ -187,13 +195,13 @@ describe(`Cursor Deploy Action`, () => {
         expect(mockedUtils.copyFileToS3).toHaveBeenCalledWith({
             path: 'master',
             bucket: 'my-bucket',
-            key: 'deploys/master'
+            key: 'my-org/my-repo/deploys/master'
         })
 
         expect(mockedUtils.copyFileToS3).toHaveBeenLastCalledWith({
             path: 'master',
             bucket: 'my-bucket',
-            key: 'rollbacks/master'
+            key: 'my-org/my-repo/rollbacks/master'
         })
 
         expect(output.treeHash).toBe('b6e1c0468f4705b8cd0f18a04cd28ef7b9da7425')

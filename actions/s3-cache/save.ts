@@ -17,15 +17,13 @@ runAction(() => {
     return saveS3Cache({bucket, hash, key})
 })
 
-export async function saveS3Cache({
-    bucket,
-    hash,
-    key
-}: {
+type SaveS3CacheActionArgs = {
     bucket: string
     hash?: string
     key?: string
-}) {
+}
+
+export async function saveS3Cache({bucket, hash, key}: SaveS3CacheActionArgs) {
     if (!hash || !key) {
         core.info(`Tree hash already processed, skipping saving the cache file.`)
         return
