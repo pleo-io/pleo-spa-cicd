@@ -12,21 +12,23 @@ describe(`S3 Cache Action - Save cache`, () => {
         When no cache file in S3 exists
         Then it should write the cache file to S3
     `, async () => {
+        const treeHash = '5948809b966891c558d7c79c0c5c401502f1a466'
+
         await saveS3Cache({
             bucket: 'my-bucket',
-            hash: '5948809b966891c558d7c79c0c5c401502f1a466',
+            hash: treeHash,
             key: 'my-org/my-repo/cache/horse'
         })
 
         expect(mockedUtils.writeLineToFile).toHaveBeenCalledTimes(1)
         expect(mockedUtils.writeLineToFile).toHaveBeenCalledWith({
-            text: '5948809b966891c558d7c79c0c5c401502f1a466',
-            path: '5948809b966891c558d7c79c0c5c401502f1a466'
+            text: treeHash,
+            path: treeHash
         })
 
         expect(mockedUtils.copyFileToS3).toHaveBeenCalledTimes(1)
         expect(mockedUtils.copyFileToS3).toHaveBeenCalledWith({
-            path: '5948809b966891c558d7c79c0c5c401502f1a466',
+            path: treeHash,
             bucket: 'my-bucket',
             key: 'my-org/my-repo/cache/horse'
         })

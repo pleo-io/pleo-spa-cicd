@@ -13,9 +13,8 @@ describe(`S3 Cache Action - Restore cache`, () => {
         Then it should return a "false" processed flag
         And it should return the S3 key and tree hash used 
     `, async () => {
-        mockedUtils.getCurrentRepoTreeHash.mockResolvedValue(
-            'b017ebdf289ba78787da4e9c3291f0b7959e7059'
-        )
+        const treeHash = 'b017ebdf289ba78787da4e9c3291f0b7959e7059'
+        mockedUtils.getCurrentRepoTreeHash.mockResolvedValue(treeHash)
         mockedUtils.fileExistsInS3.mockResolvedValue(false)
 
         const output = await restoreS3Cache({
@@ -24,16 +23,14 @@ describe(`S3 Cache Action - Restore cache`, () => {
             repo: {owner: 'my-org', repo: 'my-repo'}
         })
 
-        expect(output.key).toBe(
-            'my-org/my-repo/cache/horse/b017ebdf289ba78787da4e9c3291f0b7959e7059'
-        )
+        expect(output.key).toBe(`my-org/my-repo/cache/horse/${treeHash}`)
         expect(output.processed).toBe(false)
-        expect(output.treeHash).toBe('b017ebdf289ba78787da4e9c3291f0b7959e7059')
+        expect(output.treeHash).toBe(treeHash)
 
         expect(mockedUtils.fileExistsInS3).toHaveBeenCalledTimes(1)
         expect(mockedUtils.fileExistsInS3).toHaveBeenCalledWith({
             bucket: 'my-bucket',
-            key: 'my-org/my-repo/cache/horse/b017ebdf289ba78787da4e9c3291f0b7959e7059'
+            key: `my-org/my-repo/cache/horse/${treeHash}`
         })
     })
 
@@ -42,9 +39,8 @@ describe(`S3 Cache Action - Restore cache`, () => {
         Then it should return a "true" processed flag
         And it should return the S3 key and tree hash used
     `, async () => {
-        mockedUtils.getCurrentRepoTreeHash.mockResolvedValue(
-            'cba2d570993b9c21e3de282e5ba56d1638fb32de'
-        )
+        const treeHash = 'cba2d570993b9c21e3de282e5ba56d1638fb32de'
+        mockedUtils.getCurrentRepoTreeHash.mockResolvedValue(treeHash)
         mockedUtils.fileExistsInS3.mockResolvedValue(true)
 
         const output = await restoreS3Cache({
@@ -53,16 +49,14 @@ describe(`S3 Cache Action - Restore cache`, () => {
             repo: {owner: 'my-org', repo: 'my-repo'}
         })
 
-        expect(output.key).toBe(
-            'my-org/my-repo/cache/horse/cba2d570993b9c21e3de282e5ba56d1638fb32de'
-        )
+        expect(output.key).toBe(`my-org/my-repo/cache/horse/${treeHash}`)
         expect(output.processed).toBe(true)
-        expect(output.treeHash).toBe('cba2d570993b9c21e3de282e5ba56d1638fb32de')
+        expect(output.treeHash).toBe(treeHash)
 
         expect(mockedUtils.fileExistsInS3).toHaveBeenCalledTimes(1)
         expect(mockedUtils.fileExistsInS3).toHaveBeenCalledWith({
             bucket: 'my-other-bucket',
-            key: 'my-org/my-repo/cache/horse/cba2d570993b9c21e3de282e5ba56d1638fb32de'
+            key: `my-org/my-repo/cache/horse/${treeHash}`
         })
     })
 })

@@ -8,12 +8,12 @@ opened (see [Example Use](#example-use)).
 
 ## Inputs
 
-| Name           | Description                                    | Type     | Default                                   | Required |
-| -------------- | ---------------------------------------------- | -------- | ----------------------------------------- | :------: |
-| token          | GitHub token used to update the PR description | `string` | n/a                                       |   yes    |
-| app_domain     | The domain for the app deployments             | `string` | n/a                                       |   yes    |
-| marker         | HTML comment marker for the appended content   | `string` | `<!--preview-urls-do-not-change-below-->` |  false   |
-| stories_domain | The domain for the storybook deployments       | `string` | n/a                                       |  false   |
+| Name                     | Description                                    | Type     | Default                                   | Required |
+| ------------------------ | ---------------------------------------------- | -------- | ----------------------------------------- | :------: |
+| token                    | GitHub token used to update the PR description | `string` | n/a                                       |   yes    |
+| app_domain               | The base URL for the app deployments           | `string` | n/a                                       |   yes    |
+| marker                   | HTML comment marker for the appended content   | `string` | `<!--preview-urls-do-not-change-below-->` |  false   |
+| storybook_stories_domain | The base URL for the storybook deployments     | `string` | n/a                                       |  false   |
 
 ## Example Use
 
@@ -31,5 +31,5 @@ jobs:
               with:
                   token: ${{ secrets.GITHUB_TOKEN }}
                   app_domain: my-app.preview.example.com
-                  stories_domain: my-app-stories.preview.example.com
+                  storybook_stories_domain: my-app-stories.preview.example.com
 ```

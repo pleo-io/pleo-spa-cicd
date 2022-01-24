@@ -11,7 +11,7 @@ runAction(async () => {
     const token = core.getInput('token', {required: true})
     const marker = core.getInput('marker', {required: true})
     const appDomain = core.getInput('app_domain', {required: true})
-    const storiesDomain = core.getInput('stories_domain', {required: false})
+    const storiesDomain = core.getInput('storybook_stories_domain', {required: false})
 
     await postPreviewUrls({
         marker,

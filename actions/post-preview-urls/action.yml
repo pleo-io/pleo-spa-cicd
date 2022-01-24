@@ -13,7 +13,7 @@ inputs:
     app_domain:
         description: The domain for the app deployments
         required: true
-    stories_domain:
+    storybook_stories_domain:
         description: The domain for the storybook deployments
         required: false
 runs:

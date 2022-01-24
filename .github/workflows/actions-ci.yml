@@ -27,7 +27,7 @@ jobs:
       - name: Run tests
         run: make test
       - name: Run Prettier
-        run: yarn prettier -c .
+        run: yarn prettier --check .
   check:
     name: Build & Check
     runs-on: [self-hosted, universal]
