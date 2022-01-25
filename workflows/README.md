@@ -32,18 +32,18 @@ uploads the result to an S3 registry bucket.
 
 #### Inputs
 
-| Name         | Description                                                                | Type     | Default | Required |
-| ------------ | -------------------------------------------------------------------------- | -------- | ------- | :------: |
-| bucket_name  | Name of the S3 registry bucket                                             | `string` | n/a     |   yes    |
-| build_dir    | Name of the directory where the production output is built                 | `string` | n/a     |   yes    |
-| build_script | Name of the script in package.json used for building the production output | `string` | n/a     |   yes    |
+| Name           | Description                                                                | Type     | Default | Required |
+| -------------- | -------------------------------------------------------------------------- | -------- | ------- | :------: |
+| `bucket_name`  | Name of the S3 registry bucket                                             | `string` | n/a     |   yes    |
+| `build_dir`    | Name of the directory where the production output is built                 | `string` | n/a     |   yes    |
+| `build_script` | Name of the script in package.json used for building the production output | `string` | n/a     |   yes    |
 
 #### Secrets
 
-| Name                  | Description                                                       | Required |
-| --------------------- | ----------------------------------------------------------------- | :------: |
-| AWS_ACCESS_KEY_ID     | ID of a AWS key that allows r/w access to the registry bucket     |   yes    |
-| AWS_SECRET_ACCESS_KEY | Secret of a AWS key that allows r/w access to the registry bucket |   yes    |
+| Name                             | Description                                                       | Required |
+| -------------------------------- | ----------------------------------------------------------------- | :------: |
+| `AWS_ACCESS_KEY_ID_REGISTRY`     | ID of a AWS key that allows r/w access to the registry bucket     |   yes    |
+| `AWS_SECRET_ACCESS_KEY_REGISTRY` | Secret of a AWS key that allows r/w access to the registry bucket |   yes    |
 
 #### Outputs
 
@@ -62,8 +62,9 @@ build:
     build_dir: dist
     bucket_name: my-registry-bucket
   secrets:
-    AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID_REGISTRY }}
-    AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY_REGISTRY }}
+    AWS_ACCESS_KEY_ID_REGISTRY: ${{ secrets.AWS_ACCESS_KEY_ID_REGISTRY }}
+    AWS_SECRET_ACCESS_KEY_REGISTRY:
+      ${{ secrets.AWS_SECRET_ACCESS_KEY_REGISTRY }}
 ```
 
 ### Deploy
@@ -73,21 +74,23 @@ the cursor file for the current branch.
 
 #### Inputs
 
-| Name         | Description                                    | Type      | Default | Required |
-| ------------ | ---------------------------------------------- | --------- | ------- | :------: |
-| environment  | Name of the deployment environment             | `string`  | n/a     |   yes    |
-| bundle_uri   | S3 URI of the bundle in the registry bucket    | `string`  | n/a     |   yes    |
-| tree_hash    | Tree hash of the code to deploy                | `string`  | n/a     |   yes    |
-| bucket_name  | Name of the S3 origin bucket                   | `string`  | n/a     |   yes    |
-| domain_name  | Domain name for the app (e.g. app.example.com) | `string`  | n/a     |   yes    |
-| apply_config | Should apply:config npm script be ran          | `boolean` | `false` |    no    |
+| Name           | Description                                    | Type      | Default | Required |
+| -------------- | ---------------------------------------------- | --------- | ------- | :------: |
+| `environment`  | Name of the deployment environment             | `string`  | n/a     |   yes    |
+| `bundle_uri`   | S3 URI of the bundle in the registry bucket    | `string`  | n/a     |   yes    |
+| `tree_hash`    | Tree hash of the code to deploy                | `string`  | n/a     |   yes    |
+| `bucket_name`  | Name of the S3 origin bucket                   | `string`  | n/a     |   yes    |
+| `domain_name`  | Domain name for the app (e.g. app.example.com) | `string`  | n/a     |   yes    |
+| `apply_config` | Should apply:config npm script be ran          | `boolean` | `false` |    no    |
 
 #### Secrets
 
-| Name                  | Description                                                                                            | Required |
-| --------------------- | ------------------------------------------------------------------------------------------------------ | :------: |
-| AWS_ACCESS_KEY_ID     | ID of a AWS key that allows r/w access to the origin bucket and read access to the registry bucket     |   yes    |
-| AWS_SECRET_ACCESS_KEY | Secret of a AWS key that allows r/w access to the origin bucket and read access to the registry bucket |   yes    |
+| Name                             | Description                                                        | Required |
+| -------------------------------- | ------------------------------------------------------------------ | :------: |
+| `AWS_ACCESS_KEY_ID_REGISTRY`     | ID of a AWS key that allows read access to the registry bucket     |   yes    |
+| `AWS_SECRET_ACCESS_KEY_REGISTRY` | Secret of a AWS key that allows read access to the registry bucket |   yes    |
+| `AWS_ACCESS_KEY_ID_ORIGIN`       | ID of a AWS key that allows r/w access to the origin bucket        |   yes    |
+| `AWS_SECRET_ACCESS_KEY_ORIGIN`   | Secret of a AWS key that allows r/w access to the origin bucket    |   yes    |
 
 #### Outputs
 
@@ -109,6 +112,9 @@ deploy:
     domain_name: app.staging.example.com
     apply_config: true
   secrets:
-    AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-    AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    AWS_ACCESS_KEY_ID_ORIGIN: ${{ secrets.AWS_ACCESS_KEY_ID }}
+    AWS_SECRET_ACCESS_KEY_ORIGIN: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    AWS_ACCESS_KEY_ID_REGISTRY: ${{ secrets.AWS_ACCESS_KEY_ID_REGISTRY }}
+    AWS_SECRET_ACCESS_KEY_REGISTRY:
+      ${{ secrets.AWS_SECRET_ACCESS_KEY_REGISTRY }}
 ```

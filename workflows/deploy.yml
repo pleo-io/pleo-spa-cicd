@@ -33,13 +33,19 @@ on:
       AWS_ACCESS_KEY_ID:
         required: true
         description:
-          "ID of a AWS key that allows r/w access to the origin bucket and read
-          access to the registry bucket"
+          "ID of a AWS key that allows r/w access to the origin bucket"
       AWS_SECRET_ACCESS_KEY:
         required: true
         description:
-          "Secret of a AWS key that allows r/w access to the origin bucket and
-          read access to the registry bucket"
+          "Secret of a AWS key that allows r/w access to the origin bucket"
+      AWS_ACCESS_KEY_ID_REGISTRY:
+        required: true
+        description:
+          "ID of a AWS key that allows read access to the registry bucket"
+      AWS_SECRET_ACCESS_KEY_REGISTRY:
+        required: true
+        description:
+          "Secret of a AWS key that allows read access to the registry bucket"
     outputs:
       deployment_url:
         description: "URL where the deployment can be accessed"
@@ -61,11 +67,6 @@ jobs:
           node-version: "16"
           registry-url: "https://npm.pkg.github.com"
           scope: "@pleo-io"
-      - uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: eu-west-1
 
       - name: Get Deployment URL
         id: deployment-url
@@ -73,10 +74,24 @@ jobs:
           SUBDOMAIN=$([[ $GITHUB_REF = "refs/heads/master" ]] && echo "" || echo "preview-${{ inputs.tree_hash }}.")
           echo "::set-output name=url::https://${SUBDOMAIN}${{ inputs.domain_name }}"
 
+      - name: Setup AWS Credentials for Registry Bucket Access
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_REGISTRY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_REGISTRY }}
+          aws-region: eu-west-1
+
       - name: Download & Unpack Bundle
         run: |
           aws s3 cp ${{ inputs.bundle_uri }} bundle.tar.gz
           mkdir dist && tar -xvzf bundle.tar.gz -C dist
+
+      - name: Setup AWS Credentials for Origin Bucket Access
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-west-1
 
       - name: Install Dependencies
         uses: bahmutov/npm-install@v1
