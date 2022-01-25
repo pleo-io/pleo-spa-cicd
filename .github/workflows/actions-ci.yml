@@ -25,6 +25,7 @@ jobs:
         with:
           node-version: "16"
           cache: "yarn"
+          working-directory: actions
       - run: yarn --frozen-lockfile
       - name: Run tests
         run: make test
