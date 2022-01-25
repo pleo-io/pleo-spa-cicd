@@ -38,6 +38,11 @@ action in a step prior to running this action to ensure that's the case.
 The action supports rollbacks with blocking of automatic deployments until an explicit action is
 taken to undo the rollback.
 
+> Note that this will rollback to any commit that existed in the current branch history. It doesn't
+> guarantee that the the tree hash you're rolling back to was successfully deployed before or that
+> it doesn't suffer from the same issue as the reason for rollback. The developer performing the
+> manual rollback is responsible for ensuring that the rollback is to a safe commit.
+
 You can create rollback and unblock GitHub workflows triggered via repository dispatch, e.g.
 
 ```yml
