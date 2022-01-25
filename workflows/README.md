@@ -4,6 +4,25 @@ This directory contains
 [reusable GitHub workflows](https://docs.github.com/en/actions/using-workflows/reusing-workflows)
 which help implementing a CI/CD pipeline described in this repository.
 
+### Prerequisites
+
+In order to be compatible with these workflows, your SPA needs to meet a few
+criteria:
+
+- if your SPA is deployed to different environments with a varying config (like
+  API keys, urls etc.), it needs to be able to build an environment agnostic
+  production version, i.e. a bundle without any baked-in configuration that
+  differs between environments. The way to accomplish this will vary depending
+  on the build tooling you use.
+- if your SPA is deployed to different environments you need to provide a
+  `apply:config` script in `package.json` which can inject the config for a
+  selected environment into the bundle. This workflow will invoke the
+  `apply:config` passing 3 CLI arguments: the location of the bundle, the
+  environment and the tree hash (i.e. version) deployed.
+- all the long-cacheable assets like JS/CSS/images need to have a cache buster
+  string in their name and they need to be placed in a `${build_dir}/static`
+  directory when the production version is built.
+
 ## Workflows
 
 ### Build
