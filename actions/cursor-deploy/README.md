@@ -11,17 +11,17 @@ action in a step prior to running this action to ensure that's the case.
 
 ## Inputs
 
-| Name                 | Description                                                            | Type     | Default   | Required |
-| -------------------- | ---------------------------------------------------------------------- | -------- | --------- | :------: |
-| bucket_name          | Name of the S3 bucket to use for deployments                           | `string` | n/a       |   yes    |
-| deploy_mode          | The deployment mode (default/rollback/unblock)                         | `string` | 'default' |    no    |
-| rollback_commit_hash | Commit hash to roll back to, defaults to previous commit on the branch | `string` | n/a       |    no    |
+| Name                   | Description                                                            | Type     | Default   | Required |
+| ---------------------- | ---------------------------------------------------------------------- | -------- | --------- | :------: |
+| `bucket_name`          | Name of the S3 bucket to use for deployments                           | `string` | n/a       |   yes    |
+| `deploy_mode`          | The deployment mode (default/rollback/unblock)                         | `string` | `default` |    no    |
+| `rollback_commit_hash` | Commit hash to roll back to, defaults to previous commit on the branch | `string` | n/a       |    no    |
 
 ## Outputs
 
-| Name      | Description                        |
-| --------- | ---------------------------------- |
-| tree_hash | The tree hash of the code deployed |
+| Name        | Description                        |
+| ----------- | ---------------------------------- |
+| `tree_hash` | The tree hash of the code deployed |
 
 ## Example Use
 

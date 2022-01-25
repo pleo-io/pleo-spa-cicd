@@ -19,17 +19,17 @@ action in a step prior to running this action to ensure that's the case.
 
 ## Inputs
 
-| Name        | Description                                          | Type     | Default | Required |
-| ----------- | ---------------------------------------------------- | -------- | ------- | :------: |
-| bucket_name | Name of the S3 bucket to use for storing cache files | `string` | n/a     |   yes    |
-| key_prefix  | Key prefix to use for the cache files (e.g. job id)  | `string` | n/a     |   yes    |
+| Name          | Description                                          | Type     | Default | Required |
+| ------------- | ---------------------------------------------------- | -------- | ------- | :------: |
+| `bucket_name` | Name of the S3 bucket to use for storing cache files | `string` | n/a     |   yes    |
+| `key_prefix`  | Key prefix to use for the cache files (e.g. job id)  | `string` | n/a     |   yes    |
 
 ## Outputs
 
-| Name      | Description                                                                     |
-| --------- | ------------------------------------------------------------------------------- |
-| processed | Indicates if the job has already been performed for the current tree hash       |
-| hash      | The git tree hash which was used for cache lookup (current repo root tree hash) |
+| Name        | Description                                                                     |
+| ----------- | ------------------------------------------------------------------------------- |
+| `processed` | Indicates if the job has already been performed for the current tree hash       |
+| `hash`      | The git tree hash which was used for cache lookup (current repo root tree hash) |
 
 ## Example Use
 

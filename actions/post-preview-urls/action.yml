@@ -6,6 +6,7 @@ inputs:
     token:
         description: GitHub token used to update the PR description
         required: false
+        default: ${{ github.token }}
     marker:
         description: HTML comment marker for the appended content
         required: false

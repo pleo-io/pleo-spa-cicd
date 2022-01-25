@@ -8,12 +8,12 @@ opened (see [Example Use](#example-use)).
 
 ## Inputs
 
-| Name                     | Description                                    | Type     | Default                                   | Required |
-| ------------------------ | ---------------------------------------------- | -------- | ----------------------------------------- | :------: |
-| token                    | GitHub token used to update the PR description | `string` | n/a                                       |   yes    |
-| app_domain               | The base URL for the app deployments           | `string` | n/a                                       |   yes    |
-| marker                   | HTML comment marker for the appended content   | `string` | `<!--preview-urls-do-not-change-below-->` |  false   |
-| storybook_stories_domain | The base URL for the storybook deployments     | `string` | n/a                                       |  false   |
+| Name                       | Description                                    | Type     | Default                                   | Required |
+| -------------------------- | ---------------------------------------------- | -------- | ----------------------------------------- | :------: |
+| `app_domain`               | The base URL for the app deployments           | `string` | n/a                                       |   yes    |
+| `marker`                   | HTML comment marker for the appended content   | `string` | `<!--preview-urls-do-not-change-below-->` |  false   |
+| `storybook_stories_domain` | The base URL for the storybook deployments     | `string` | n/a                                       |  false   |
+| `token`                    | GitHub token used to update the PR description | `string` | `GITHUB_TOKEN`                            |    no    |
 
 ## Example Use
 
