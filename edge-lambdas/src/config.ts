@@ -1,4 +1,4 @@
-import { readFileSync } from "fs";
+import {readFileSync} from 'fs'
 
 /**
  * Retrieve config from a JSON config file. Since we can't use Lambda environment variables
@@ -7,14 +7,14 @@ import { readFileSync } from "fs";
  * @returns The configuration object loaded from the file
  */
 export function getConfig(): Config {
-  return JSON.parse(readFileSync("./config.json", { encoding: "utf8" }));
+    return JSON.parse(readFileSync('./config.json', {encoding: 'utf8'}))
 }
 
 export type Config = {
-  environment: "staging" | "production";
-  originBucketName: string;
-  originBucketRegion: string;
-  previewDeploymentPostfix?: string;
-  defaultBranchName?: string;
-  blockIframes?: string;
-};
+    environment: 'staging' | 'production'
+    originBucketName: string
+    originBucketRegion: string
+    previewDeploymentPostfix?: string
+    defaultBranchName?: string
+    blockIframes?: string
+}

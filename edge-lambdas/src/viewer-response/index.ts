@@ -1,6 +1,6 @@
-import { getConfig } from "../config";
-import { getHandler } from "./viewer-response";
+import {getConfig} from '../config'
+import {getHandler} from './viewer-response'
 
-const config = getConfig();
+const config = getConfig()
 
-export const handler = getHandler(config);
+export const handler = getHandler(config)

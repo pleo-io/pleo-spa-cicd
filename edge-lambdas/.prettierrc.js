@@ -1,1 +1,10 @@
-module.exports = {...require('@pleo-io/prettier-config').prettier, proseWrap: 'always'}
+module.exports = {
+    printWidth: 100,
+    tabWidth: 4,
+    semi: false,
+    singleQuote: true,
+    bracketSpacing: false,
+    arrowParens: 'always',
+    trailingComma: 'none',
+    proseWrap: 'always'
+}

@@ -1,8 +1,8 @@
 {
-  "compilerOptions": {
-    "target": "es6",
-    "moduleResolution": "node",
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true
-  }
+    "compilerOptions": {
+        "target": "es6",
+        "moduleResolution": "node",
+        "allowSyntheticDefaultImports": true,
+        "esModuleInterop": true
+    }
 }
