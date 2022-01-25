@@ -34,10 +34,27 @@ jobs:
       - name: Run tests
         run: make test
 
+  check-version:
+    name: Check Version
+    runs-on: [self-hosted, universal]
+    outputs:
+      upload_uri: ${{ steps.upload-uri.outputs.uri }}
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v2
+      - name: Get Upload URI
+        id: upload-uri
+        run: |
+          echo "::set-output name=uri::s3://${{ env.S3_BUCKET }}/edge-lambdas/$(jq -r .version package.json)"
+      - name: Check if version already exists
+        run: |
+          (! aws s3 ls ${{ steps.upload-uri.outputs.uri}}) || (echo "::error::You forgot to update he version in package.json" && exit 1)
+
   upload:
     name: Build & Upload
     runs-on: [self-hosted, universal]
-    if: github.ref == 'refs/heads/main'
+    needs: check-version
     permissions:
       contents: read
     steps:
@@ -57,5 +74,6 @@ jobs:
       - name: Build
         run: make
       - name: Upload Files
+        if: github.ref == 'refs/heads/main'
         run: |
-          aws s3 cp --recursive dist s3://${{ env.S3_BUCKET }}/edge-lambdas/$(jq -r .version package.json)
+          aws s3 cp --recursive dist ${{ needs.check-version.outputs.upload_uri }}
