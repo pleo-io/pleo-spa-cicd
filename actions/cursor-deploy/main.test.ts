@@ -121,8 +121,7 @@ describe(`Cursor Deploy Action`, () => {
 
         mockedUtils.getCurrentRepoTreeHash.mockResolvedValue(currentTreeHash)
         mockedUtils.fileExistsInS3.mockResolvedValue(false)
-        mockedUtils.execIsSuccessful.mockResolvedValue(true)
-        mockedUtils.execReadOutput.mockResolvedValue(commitTreeHash)
+        mockedUtils.getTreeHashForCommitHash.mockResolvedValue(commitTreeHash)
 
         const output = await cursorDeploy({
             bucket: 'my-prod-bucket',
@@ -133,7 +132,8 @@ describe(`Cursor Deploy Action`, () => {
         })
 
         expect(mockedUtils.fileExistsInS3).not.toHaveBeenCalled()
-        expect(mockedUtils.execReadOutput).toHaveBeenCalledWith('git rev-parse', ['HEAD^:'])
+        expect(mockedUtils.isHeadAncestor).not.toHaveBeenCalled()
+        expect(mockedUtils.getTreeHashForCommitHash).toHaveBeenCalledWith('HEAD^')
 
         expect(mockedUtils.writeLineToFile).toHaveBeenCalledTimes(1)
         expect(mockedUtils.writeLineToFile).toHaveBeenCalledWith({
@@ -165,24 +165,24 @@ describe(`Cursor Deploy Action`, () => {
     `, async () => {
         const currentTreeHash = 'b017ebdf289ba78787da4e9c3291f0b7959e7059'
         const commitTreeHash = 'b6e1c0468f4705b8cd0f18a04cd28ef7b9da7425'
+        const commitHash = 'fc24d309398cbf6d53237e05e4d2a8cd2de57cc7'
 
         mockedUtils.getCurrentRepoTreeHash.mockResolvedValue(currentTreeHash)
         mockedUtils.fileExistsInS3.mockResolvedValue(false)
-        mockedUtils.execIsSuccessful.mockResolvedValue(true)
-        mockedUtils.execReadOutput.mockResolvedValue(commitTreeHash)
+        mockedUtils.isHeadAncestor.mockResolvedValue(true)
+        mockedUtils.getTreeHashForCommitHash.mockResolvedValue(commitTreeHash)
 
         const output = await cursorDeploy({
             bucket: 'my-bucket',
             deployModeInput: 'rollback',
-            rollbackCommitHash: 'fc24d309398cbf6d53237e05e4d2a8cd2de57cc7',
+            rollbackCommitHash: commitHash,
             ref: 'refs/heads/master',
             repo: {owner: 'my-org', repo: 'my-repo'}
         })
 
         expect(mockedUtils.fileExistsInS3).not.toHaveBeenCalled()
-        expect(mockedUtils.execReadOutput).toHaveBeenCalledWith('git rev-parse', [
-            'fc24d309398cbf6d53237e05e4d2a8cd2de57cc7:'
-        ])
+        expect(mockedUtils.isHeadAncestor).toHaveBeenCalledWith(commitHash)
+        expect(mockedUtils.getTreeHashForCommitHash).toHaveBeenCalledWith(commitHash)
 
         expect(mockedUtils.writeLineToFile).toHaveBeenCalledTimes(1)
         expect(mockedUtils.writeLineToFile).toHaveBeenCalledWith({
@@ -204,6 +204,98 @@ describe(`Cursor Deploy Action`, () => {
         })
 
         expect(output.treeHash).toBe(commitTreeHash)
+    })
+
+    test(`
+        When the action runs in the unblock deploy mode
+        And there is an active rollback on that branch/env
+        Then the rollback file is deleted 
+        And the cursor file is updated
+        And the tree hash used is the tree hash of the passed commit hash
+    `, async () => {
+        const treeHash = 'b017ebdf289ba78787da4e9c3291f0b7959e7059'
+
+        mockedUtils.getCurrentRepoTreeHash.mockResolvedValue(treeHash)
+        mockedUtils.fileExistsInS3.mockResolvedValue(true)
+        mockedUtils.isHeadAncestor.mockResolvedValue(true)
+
+        const output = await cursorDeploy({
+            bucket: 'my-bucket',
+            deployModeInput: 'unblock',
+            rollbackCommitHash: '',
+            ref: 'refs/heads/master',
+            repo: {owner: 'my-org', repo: 'my-repo'}
+        })
+
+        expectRollbackFileChecked('my-bucket', 'my-org/my-repo/rollbacks/master')
+
+        expectCursorFileUpdated({
+            treeHash: treeHash,
+            branch: 'master',
+            bucket: 'my-bucket',
+            key: 'my-org/my-repo/deploys/master'
+        })
+
+        expect(mockedUtils.removeFileFromS3).toHaveBeenCalledWith({
+            bucket: 'my-bucket',
+            key: 'my-org/my-repo/rollbacks/master'
+        })
+
+        expect(output.treeHash).toBe(treeHash)
+    })
+
+    test(`
+        When an incorrect deploy mode is passed
+        Then the action fails with an informative error
+    `, async () => {
+        const promise = cursorDeploy({
+            bucket: 'my-bucket',
+            deployModeInput: 'horse',
+            ref: 'refs/heads/master',
+            rollbackCommitHash: '',
+            repo: {owner: 'my-org', repo: 'my-repo'}
+        })
+
+        expect(promise).rejects.toEqual(new Error('Incorrect deploy mode (horse)'))
+
+        await promise.catch((error) => error)
+        expect(mockedUtils.copyFileToS3).not.toHaveBeenCalled()
+        expect(mockedUtils.removeFileFromS3).not.toHaveBeenCalled()
+    })
+
+    test(`
+        When the action runs in the rollback deploy mode
+        And a specific rollback hash is provided
+        And the hash is not in the history of the current branch
+        Then the action fails with an informative error
+    `, async () => {
+        const currentTreeHash = 'b017ebdf289ba78787da4e9c3291f0b7959e7059'
+        const commitHash = 'fc24d309398cbf6d53237e05e4d2a8cd2de57cc7'
+        const commitTreeHash = 'b6e1c0468f4705b8cd0f18a04cd28ef7b9da7425'
+
+        mockedUtils.getCurrentRepoTreeHash.mockResolvedValue(currentTreeHash)
+        mockedUtils.fileExistsInS3.mockResolvedValue(false)
+        mockedUtils.isHeadAncestor.mockResolvedValue(false)
+        mockedUtils.getTreeHashForCommitHash.mockResolvedValue(commitTreeHash)
+
+        const promise = cursorDeploy({
+            bucket: 'my-bucket',
+            deployModeInput: 'rollback',
+            rollbackCommitHash: commitHash,
+            ref: 'refs/heads/master',
+            repo: {owner: 'my-org', repo: 'my-repo'}
+        })
+
+        expect(promise).rejects.toEqual(
+            new Error('The selected rollback commit is not present on the branch')
+        )
+
+        await promise.catch((error) => error)
+
+        expect(mockedUtils.fileExistsInS3).not.toHaveBeenCalled()
+        expect(mockedUtils.isHeadAncestor).toHaveBeenCalledWith(commitHash)
+        expect(mockedUtils.copyFileToS3).not.toHaveBeenCalled()
+        expect(mockedUtils.removeFileFromS3).not.toHaveBeenCalled()
     })
 })
 

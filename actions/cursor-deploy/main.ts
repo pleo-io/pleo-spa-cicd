@@ -15,10 +15,10 @@ import {
     fileExistsInS3,
     removeFileFromS3,
     runAction,
-    execIsSuccessful,
-    execReadOutput,
     getCurrentRepoTreeHash,
-    getSanitizedBranchName
+    getSanitizedBranchName,
+    isHeadAncestor,
+    getTreeHashForCommitHash
 } from '../utils'
 
 const deployModes = ['default', 'rollback', 'unblock'] as const
@@ -62,16 +62,20 @@ export async function cursorDeploy({
     const rollbackKey = `${repo.owner}/${repo.repo}/rollbacks/${branchName}`
     const deployKey = `${repo.owner}/${repo.repo}/deploys/${branchName}`
 
-    // If we're doing a regular deployment, we need to make sure there isn't an active
-    // rollback for the branch we're deploying. Active rollback prevents automatic
-    // deployments and requires an explicit unblocking deployment to resume them.
-    if (deployMode === 'default') {
-        const rollbackFileExists = await fileExistsInS3({
-            bucket,
-            key: rollbackKey
-        })
-        if (rollbackFileExists) {
+    if (deployMode === 'default' || deployMode === 'unblock') {
+        const rollbackFileExists = await fileExistsInS3({bucket, key: rollbackKey})
+
+        // If we're doing a regular deployment, we need to make sure there isn't an active
+        // rollback for the branch we're deploying. Active rollback prevents automatic
+        // deployments and requires an explicit unblocking deployment to resume them.
+        if (deployMode === 'default' && rollbackFileExists) {
             throw new Error(`${branchName} is currently blocked due to an active rollback.`)
+        }
+
+        // If we're unblocking a branch after a rollback, it only makes sense if there is an
+        // active rollback
+        if (deployMode === 'unblock' && !rollbackFileExists) {
+            throw new Error(`${branchName} does not have an active rollback, you can't unblock.`)
         }
     }
 
@@ -129,7 +133,7 @@ function getDeployMode(deployMode: string) {
  */
 async function getDeploymentHash(deployMode: DeployMode, rollbackCommitHash?: string) {
     if (deployMode === 'rollback') {
-        if (!!rollbackCommitHash && !isHeadAncestor(rollbackCommitHash)) {
+        if (!!rollbackCommitHash && !(await isHeadAncestor(rollbackCommitHash))) {
             throw new Error('The selected rollback commit is not present on the branch')
         }
         // If no rollback commit is provided, we default to the previous commit on the branch
@@ -142,22 +146,4 @@ async function getDeploymentHash(deployMode: DeployMode, rollbackCommitHash?: st
     const treeHash = await getCurrentRepoTreeHash()
     core.info(`Using current root tree hash ${treeHash}`)
     return treeHash
-}
-
-/**
- * Validate if the passed git commit hash is present on the current branch
- * @param commitHash - commit hash to validate
- * @returns isHeadAncestor
- */
-async function isHeadAncestor(commitHash: string) {
-    return execIsSuccessful('git merge-base', [`--is-ancestor`, commitHash, `HEAD`])
-}
-
-/**
- * Retrieve the root tree hash for the provided commit identifier
- * @param commit - commit identifier to lookup
- * @returns treeHash
- */
-async function getTreeHashForCommitHash(commit: string) {
-    return execReadOutput('git rev-parse', [`${commit}:`])
 }
