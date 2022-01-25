@@ -18,7 +18,7 @@ defaults:
 
 jobs:
   ci:
-    name: Test & Build
+    name: Build & Test
     runs-on: [self-hosted, universal]
     permissions:
       contents: read
@@ -48,7 +48,7 @@ jobs:
       - name: Run Prettier
         run: yarn prettier --check .
       - name: Build
-        run: make
+        run: make all
       - name: Upload Files to S3
         if: github.ref == 'refs/heads/main'
         run: |

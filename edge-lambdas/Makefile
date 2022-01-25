@@ -6,7 +6,7 @@ node_modules: package.json
 dist/%/index.js: src/%/index.ts node_modules
 	node_modules/.bin/ncc build -e aws-sdk/clients/s3 $< -o $(dir $@)
 
-test: all node_modules
+test: node_modules
 	node_modules/.bin/jest .
 
 clean:
