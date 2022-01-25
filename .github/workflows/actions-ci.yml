@@ -21,15 +21,17 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v2
-      - uses: bahmutov/npm-install@v1
+      - uses: actions/setup-node@v2
         with:
-          working-directory: actions
+          node-version: "16"
+          cache: "yarn"
+      - run: yarn --frozen-lockfile
       - name: Run tests
         run: make test
       - name: Run Prettier
         run: yarn prettier --check .
-      - name: Build
+      - name: Build all actions
         run: make build
-      - name: Check if built version is committed
+      - name: Check if built version was committed
         run: |
-          git diff --quiet --exit-code || (echo "::error::You forgot to commit the built actions" && exit 1)
+          git diff --quiet --exit-code || (echo "::error::You forgot to commit the built actions, run 'make' locally" && exit 1)
