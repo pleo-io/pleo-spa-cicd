@@ -9,9 +9,6 @@ concurrency:
   group: edge-lambda-ci-${{ github.ref }}
   cancel-in-progress: true
 
-env:
-  S3_BUCKET: pleo-product-web-registry
-
 defaults:
   run:
     working-directory: edge-lambdas
@@ -23,20 +20,18 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v2.4.0
+      - uses: actions/setup-node@v2.5.1
         with:
           node-version: "16"
           cache: "yarn"
           cache-dependency-path: edge-lambdas/yarn.lock
-      - name: Install Dependencies
-        run: yarn --frozen-lockfile
-      - name: Run tests
-        run: make test
-      - name: Run Prettier
-        run: yarn prettier --check .
-      - name: Build
-        run: make all
+
+      - run: yarn --frozen-lockfile
+      - run: make lint
+      - run: make test
+      - run: make build
+
       - name: Check if built version was committed
         run: |
           git diff --quiet --exit-code || (echo "::error::You forgot to commit the built actions, run 'make' locally" && exit 1)
