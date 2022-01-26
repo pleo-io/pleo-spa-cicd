@@ -11,7 +11,8 @@ describe(`Viewer request Lambda@Edge`, () => {
     test(`When requesting app.pleo.io 
           it modifies the request to fetch the latest production HTML
     `, async () => {
-        const s3 = mockGetObject('some-hash-1234')
+        const treeHash = '3b6197b16baa26057a25fcd5d60a64c4c0765d18'
+        const s3 = mockGetObject(treeHash)
 
         const handler = getHandler(
             {
@@ -33,7 +34,7 @@ describe(`Viewer request Lambda@Edge`, () => {
             requestFromEvent(
                 mockRequestEvent({
                     host: 'app.pleo.io',
-                    uri: '/html/some-hash-1234/index.html'
+                    uri: `/html/${treeHash}/index.html`
                 })
             )
         )
@@ -42,7 +43,8 @@ describe(`Viewer request Lambda@Edge`, () => {
     test(`When requesting app.staging.pleo.io
             it modifies the request to fetch the latest staging HTML
       `, async () => {
-        const s3 = mockGetObject('some-hash-2412')
+        const treeHash = '75703e9524292bfa57c259e0621c3ed6b53bfcf2'
+        const s3 = mockGetObject(treeHash)
         const handler = getHandler(
             {
                 environment: 'staging',
@@ -64,7 +66,7 @@ describe(`Viewer request Lambda@Edge`, () => {
             requestFromEvent(
                 mockRequestEvent({
                     host: 'app.staging.pleo.io',
-                    uri: '/html/some-hash-2412/index.html'
+                    uri: `/html/${treeHash}/index.html`
                 })
             )
         )
@@ -73,7 +75,8 @@ describe(`Viewer request Lambda@Edge`, () => {
     test(`When requesting e.g. my-feature.app.staging.pleo.io
             it modifies the request to fetch the latest HTML for that branch
       `, async () => {
-        const s3 = mockGetObject('some-hash-23125')
+        const treeHash = '75703e9524292bfa57c259e0621c3ed6b53bfcf2'
+        const s3 = mockGetObject(treeHash)
 
         const handler = getHandler(
             {
@@ -96,14 +99,15 @@ describe(`Viewer request Lambda@Edge`, () => {
             requestFromEvent(
                 mockRequestEvent({
                     host: 'my-feature.app.staging.pleo.io',
-                    uri: '/html/some-hash-23125/index.html'
+                    uri: `/html/${treeHash}/index.html`
                 })
             )
         )
     })
 
     test(`Handles requests for specific html files`, async () => {
-        const s3 = mockGetObject('some-hash-23125')
+        const treeHash = 'ce4a66492551f1cd2fad5296ee94b8ea2667eac3'
+        const s3 = mockGetObject(treeHash)
         const handler = getHandler(
             {
                 environment: 'staging',
@@ -128,13 +132,14 @@ describe(`Viewer request Lambda@Edge`, () => {
             requestFromEvent(
                 mockRequestEvent({
                     host: 'my-feature.app.staging.pleo.io',
-                    uri: '/html/some-hash-23125/iframe.html'
+                    uri: `/html/${treeHash}/iframe.html`
                 })
             )
         )
     })
 
     test(`Handles requests for well known files`, async () => {
+        const treeHash = 'ce4a66492551f1cd2fad5296ee94b8ea2667eac3'
         const s3 = mockGetObject('some-hash-23125')
         const handler = getHandler(
             {
@@ -160,16 +165,18 @@ describe(`Viewer request Lambda@Edge`, () => {
             requestFromEvent(
                 mockRequestEvent({
                     host: 'my-feature.app.staging.pleo.io',
-                    uri: '/html/some-hash-23125/.well-known/apple-app-site-association'
+                    uri: `/html/${treeHash}/.well-known/apple-app-site-association`
                 })
             )
         )
     })
 
-    test(`When requesting e.g. preview-83436472715537da0ee129412de8df6bc1287500.app.staging.pleo.io
+    test(`When requesting a specific version i.e. preview-{treeHash}.app.staging.pleo.io
             it modifies the request to fetch the HTML for that tree hash
       `, async () => {
-        const s3 = mockGetObject('some-hash-23125')
+        const treeHash = 'c43d9be8eaa4f0bb422d1c171769f674c5a1dd1c'
+        const requestedTreeHash = '83436472715537da0ee129412de8df6bc1287500'
+        const s3 = mockGetObject(treeHash)
         const handler = getHandler(
             {
                 environment: 'staging',
@@ -180,9 +187,7 @@ describe(`Viewer request Lambda@Edge`, () => {
             s3
         )
 
-        const event = mockRequestEvent({
-            host: 'preview-83436472715537da0ee129412de8df6bc1287500.app.staging.pleo.io'
-        })
+        const event = mockRequestEvent({host: `preview-${requestedTreeHash}.app.staging.pleo.io`})
 
         const response = await handler(event, {} as any, () => {})
 
@@ -190,8 +195,8 @@ describe(`Viewer request Lambda@Edge`, () => {
         expect(response).toEqual(
             requestFromEvent(
                 mockRequestEvent({
-                    host: 'preview-83436472715537da0ee129412de8df6bc1287500.app.staging.pleo.io',
-                    uri: '/html/83436472715537da0ee129412de8df6bc1287500/index.html'
+                    host: `preview-${requestedTreeHash}.app.staging.pleo.io`,
+                    uri: `/html/${requestedTreeHash}/index.html`
                 })
             )
         )
