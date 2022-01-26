@@ -9620,18 +9620,17 @@ const deployModes = ['default', 'rollback', 'unblock'];
         bucket,
         deployModeInput,
         rollbackCommitHash,
-        ref: github.context.ref,
-        repo: github.context.repo
+        ref: github.context.ref
     });
     core.setOutput('tree_hash', output.treeHash);
 }));
-function cursorDeploy({ ref, bucket, deployModeInput, rollbackCommitHash, repo }) {
+function cursorDeploy({ ref, bucket, deployModeInput, rollbackCommitHash }) {
     return __awaiter(this, void 0, void 0, function* () {
         const deployMode = getDeployMode(deployModeInput);
         const branchName = (0, utils_1.getSanitizedBranchName)(ref);
         const treeHash = yield getDeploymentHash(deployMode, rollbackCommitHash);
-        const rollbackKey = `${repo.owner}/${repo.repo}/rollbacks/${branchName}`;
-        const deployKey = `${repo.owner}/${repo.repo}/deploys/${branchName}`;
+        const rollbackKey = `rollbacks/${branchName}`;
+        const deployKey = `deploys/${branchName}`;
         if (deployMode === 'default' || deployMode === 'unblock') {
             const rollbackFileExists = yield (0, utils_1.fileExistsInS3)({ bucket, key: rollbackKey });
             // If we're doing a regular deployment, we need to make sure there isn't an active

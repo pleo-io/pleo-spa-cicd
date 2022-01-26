@@ -1,4 +1,4 @@
-# Get the number of CPUs and allow building in parallel
+# Attempt to run in parallel
 MAKEFLAGS += -j3
 
 all: test build

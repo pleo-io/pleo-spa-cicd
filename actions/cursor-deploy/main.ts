@@ -33,8 +33,7 @@ runAction(async () => {
         bucket,
         deployModeInput,
         rollbackCommitHash,
-        ref: github.context.ref,
-        repo: github.context.repo
+        ref: github.context.ref
     })
 
     core.setOutput('tree_hash', output.treeHash)
@@ -45,22 +44,20 @@ interface CursorDeployActionArgs {
     deployModeInput: string
     rollbackCommitHash: string
     ref: string
-    repo: {owner: string; repo: string}
 }
 
 export async function cursorDeploy({
     ref,
     bucket,
     deployModeInput,
-    rollbackCommitHash,
-    repo
+    rollbackCommitHash
 }: CursorDeployActionArgs) {
     const deployMode = getDeployMode(deployModeInput)
     const branchName = getSanitizedBranchName(ref)
     const treeHash = await getDeploymentHash(deployMode, rollbackCommitHash)
 
-    const rollbackKey = `${repo.owner}/${repo.repo}/rollbacks/${branchName}`
-    const deployKey = `${repo.owner}/${repo.repo}/deploys/${branchName}`
+    const rollbackKey = `rollbacks/${branchName}`
+    const deployKey = `deploys/${branchName}`
 
     if (deployMode === 'default' || deployMode === 'unblock') {
         const rollbackFileExists = await fileExistsInS3({bucket, key: rollbackKey})
