@@ -29,27 +29,14 @@ jobs:
           node-version: "16"
           cache: "yarn"
           cache-dependency-path: edge-lambdas/yarn.lock
-      - uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: eu-west-1
       - name: Install Dependencies
         run: yarn --frozen-lockfile
-      - name: Get Upload URI
-        id: upload-uri
-        run: |
-          echo "::set-output name=uri::s3://${{ env.S3_BUCKET }}/edge-lambdas/$(jq -r .version package.json)"
-      - name: Check if version already exists
-        run: |
-          (! aws s3 ls ${{ steps.upload-uri.outputs.uri }}) || (echo "::error::You forgot to update he version in package.json" && exit 1)
       - name: Run tests
         run: make test
       - name: Run Prettier
         run: yarn prettier --check .
       - name: Build
         run: make all
-      - name: Upload Files to S3
-        if: github.ref == 'refs/heads/main'
+      - name: Check if built version was committed
         run: |
-          aws s3 cp --recursive dist ${{ steps.upload-uri.outputs.uri }}
+          git diff --quiet --exit-code || (echo "::error::You forgot to commit the built actions, run 'make' locally" && exit 1)
