@@ -9627,7 +9627,7 @@ const utils_1 = __nccwpck_require__(691);
 function restoreS3Cache({ bucket, keyPrefix, repo }) {
     return __awaiter(this, void 0, void 0, function* () {
         const treeHash = yield (0, utils_1.getCurrentRepoTreeHash)();
-        const key = `${repo.owner}/${repo.repo}/cache/${keyPrefix}/${treeHash}`;
+        const key = `cache/${repo.owner}/${repo.repo}/${keyPrefix}/${treeHash}`;
         const fileExists = yield (0, utils_1.fileExistsInS3)({ key, bucket });
         if (fileExists) {
             core.info(`Tree hash ${treeHash} already processed.`);

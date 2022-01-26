@@ -36,7 +36,7 @@ type RestoreS3CacheActionArgs = {
 export async function restoreS3Cache({bucket, keyPrefix, repo}: RestoreS3CacheActionArgs) {
     const treeHash = await getCurrentRepoTreeHash()
 
-    const key = `${repo.owner}/${repo.repo}/cache/${keyPrefix}/${treeHash}`
+    const key = `cache/${repo.owner}/${repo.repo}/${keyPrefix}/${treeHash}`
     const fileExists = await fileExistsInS3({key, bucket})
 
     if (fileExists) {

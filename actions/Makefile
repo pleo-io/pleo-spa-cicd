@@ -11,7 +11,7 @@ s3-cache/dist/%/index.js: s3-cache/%.ts utils.ts node_modules
 %/dist/main/index.js: %/main.ts utils.ts node_modules
 	./node_modules/.bin/ncc build $< -o $(dir $@)
 
-test: package.json
+test: node_modules
 	./node_modules/.bin/jest
 
 node_modules: package.json

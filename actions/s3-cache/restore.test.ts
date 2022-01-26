@@ -23,14 +23,14 @@ describe(`S3 Cache Action - Restore cache`, () => {
             repo: {owner: 'my-org', repo: 'my-repo'}
         })
 
-        expect(output.key).toBe(`my-org/my-repo/cache/horse/${treeHash}`)
+        expect(output.key).toBe(`cache/my-org/my-repo/horse/${treeHash}`)
         expect(output.processed).toBe(false)
         expect(output.treeHash).toBe(treeHash)
 
         expect(mockedUtils.fileExistsInS3).toHaveBeenCalledTimes(1)
         expect(mockedUtils.fileExistsInS3).toHaveBeenCalledWith({
             bucket: 'my-bucket',
-            key: `my-org/my-repo/cache/horse/${treeHash}`
+            key: `cache/my-org/my-repo/horse/${treeHash}`
         })
     })
 
@@ -49,14 +49,14 @@ describe(`S3 Cache Action - Restore cache`, () => {
             repo: {owner: 'my-org', repo: 'my-repo'}
         })
 
-        expect(output.key).toBe(`my-org/my-repo/cache/horse/${treeHash}`)
+        expect(output.key).toBe(`cache/my-org/my-repo/horse/${treeHash}`)
         expect(output.processed).toBe(true)
         expect(output.treeHash).toBe(treeHash)
 
         expect(mockedUtils.fileExistsInS3).toHaveBeenCalledTimes(1)
         expect(mockedUtils.fileExistsInS3).toHaveBeenCalledWith({
             bucket: 'my-other-bucket',
-            key: `my-org/my-repo/cache/horse/${treeHash}`
+            key: `cache/my-org/my-repo/horse/${treeHash}`
         })
     })
 })
