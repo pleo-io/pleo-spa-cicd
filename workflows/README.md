@@ -34,6 +34,7 @@ uploads the result to an S3 registry bucket.
 
 | Name           | Description                                                                | Type     | Default | Required |
 | -------------- | -------------------------------------------------------------------------- | -------- | ------- | :------: |
+| `app_name`     | Name of the app, unique for the repo, kebab-cased                          | `string` | n/a     |   yes    |
 | `bucket_name`  | Name of the S3 registry bucket                                             | `string` | n/a     |   yes    |
 | `build_dir`    | Name of the directory where the production output is built                 | `string` | n/a     |   yes    |
 | `build_script` | Name of the script in package.json used for building the production output | `string` | n/a     |   yes    |

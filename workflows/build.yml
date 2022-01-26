@@ -4,6 +4,10 @@ name: Build
 on:
   workflow_call:
     inputs:
+      app_name:
+        required: true
+        description: "Name of the app, unique for the repo, kebab-cased"
+        type: string
       bucket_name:
         required: true
         description: "Name of the S3 registry bucket"
@@ -61,7 +65,7 @@ jobs:
         id: s3-cache
         with:
           bucket_name: ${{ inputs.bucket_name }}
-          key_prefix: cache/build
+          key_prefix: build/${{ inputs.app_name }}
 
       - name: Install Dependencies
         if: steps.s3-cache.outputs.processed == 'false'
