@@ -140,7 +140,7 @@ function getHandler(config, s3) {
         catch (e) {
             console.error(e);
             // On failure, we're requesting a non-existent file on purpose, to allow CF to serve
-            // the configured custom error page.
+            // the configured custom error page
             request.uri = '/404';
         }
         return request;
