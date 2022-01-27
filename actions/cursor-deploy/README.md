@@ -24,7 +24,7 @@ action in a step prior to running this action to ensure that's the case.
 | - | - | - | - |
 | rollback_commit_hash | Commit hash to roll back to, defaults to the previous commit on the branch | `false` |  |
 | bucket_name | Bucket to use for deployments | `true` |  |
-| deploy_mode | The deployment mode (default | rollback | unblock) | `false` | default |
+| deploy_mode | The deployment mode (default / rollback / unblock) | `false` | default |
 
 
 

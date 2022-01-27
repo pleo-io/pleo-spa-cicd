@@ -10,7 +10,7 @@ inputs:
         description: Bucket to use for deployments
         required: true
     deploy_mode:
-        description: The deployment mode (default | rollback | unblock)
+        description: The deployment mode (default / rollback / unblock)
         required: false
         default: 'default'
 outputs:
