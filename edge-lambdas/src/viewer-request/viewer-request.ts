@@ -29,7 +29,9 @@ export function getHandler(config: Config, s3: S3) {
             request.uri = await getUri(request, config, s3)
         } catch (e) {
             console.error(e)
-            return getErrorPageResponse()
+            // On failure, we're requesting a non-existent file on purpose, to allow CF to serve
+            // the configured custom error page
+            request.uri = '/404'
         }
 
         return request
@@ -58,7 +60,7 @@ async function getUri(request: CloudFrontRequest, config: Config, s3: S3) {
     const isWellKnownRequest = request.uri.startsWith('/.well-known/')
     const filePath = isFileRequest || isWellKnownRequest ? request.uri : '/index.html'
 
-    return path.join(`/html/${treeHash}${filePath}`)
+    return path.join('/html', treeHash, filePath)
 }
 
 // We use repository tree hash to identify the version of the HTML served.
@@ -113,29 +115,4 @@ async function fetchDeploymentTreeHash(branch: string, config: Config, s3: S3) {
     }
 
     return response.Body.toString('utf-8').trim()
-}
-
-/**
- * Returns a basic 404 Cloudfront response
- */
-function getErrorPageResponse() {
-    return {
-        status: '404',
-        statusDescription: 'Not found',
-        headers: {
-            'cache-control': [
-                {
-                    key: 'Cache-Control',
-                    value: 'max-age=100'
-                }
-            ],
-            'content-type': [
-                {
-                    key: 'Content-Type',
-                    value: 'text/html'
-                }
-            ]
-        },
-        body: `<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>Not found</title></head><body><p>Page not found.</p></body></html>`
-    }
 }

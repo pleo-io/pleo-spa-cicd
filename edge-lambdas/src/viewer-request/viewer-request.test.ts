@@ -140,7 +140,7 @@ describe(`Viewer request Lambda@Edge`, () => {
 
     test(`Handles requests for well known files`, async () => {
         const treeHash = 'ce4a66492551f1cd2fad5296ee94b8ea2667eac3'
-        const s3 = mockGetObject('some-hash-23125')
+        const s3 = mockGetObject(treeHash)
         const handler = getHandler(
             {
                 environment: 'staging',
@@ -203,7 +203,7 @@ describe(`Viewer request Lambda@Edge`, () => {
     })
 
     test(`When requesting preview of an unknown branch,
-            it modifies the request too return a 404 page
+            it requests the non-existing file to a trigger 404 error
       `, async () => {
         const s3 = new MockedS3()
         s3.getObject = jest.fn().mockReturnValue({
@@ -230,15 +230,14 @@ describe(`Viewer request Lambda@Edge`, () => {
             Bucket: 'test-origin-bucket-staging',
             Key: `deploys/what-is-this-branch`
         })
-        expect(response).toEqual({
-            status: '404',
-            statusDescription: 'Not found',
-            headers: {
-                'cache-control': [{key: 'Cache-Control', value: 'max-age=100'}],
-                'content-type': [{key: 'Content-Type', value: 'text/html'}]
-            },
-            body: '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>Not found</title></head><body><p>Page not found.</p></body></html>'
-        })
+        expect(response).toEqual(
+            requestFromEvent(
+                mockRequestEvent({
+                    host: `what-is-this-branch.app.staging.pleo.io`,
+                    uri: `/404`
+                })
+            )
+        )
         expect(console.error).toHaveBeenCalledTimes(1)
     })
 })
