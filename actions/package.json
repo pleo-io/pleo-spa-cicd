@@ -10,6 +10,7 @@
     "devDependencies": {
         "@types/jest": "^27.4.0",
         "@vercel/ncc": "0.33.1",
+        "action-docs": "^1.0.3",
         "jest": "27.4.7",
         "prettier": "^2.5.1",
         "ts-jest": "^27.1.2",

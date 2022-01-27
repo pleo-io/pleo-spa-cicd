@@ -2,7 +2,13 @@
 
 ![](./screenshot.png)
 
+<!-- action-docs-description -->
+## Description
+
 Allows to skip a job if it was already performed for the same repo state. Uses S3 for caching.
+
+
+<!-- action-docs-description -->
 
 It will save a `cache/some-job/{hash}` file in S3 where `hash` is the current root git repo tree
 SHA-1 hash. Any time the same job is run with the same state of the repository, you can avoid any
@@ -17,19 +23,29 @@ Note that the action assumes that the AWS credentials has already been configure
 allow to read and write to the S3 bucket provided as input. Use the `configure-aws-credentials`
 action in a step prior to running this action to ensure that's the case.
 
+<!-- action-docs-inputs -->
 ## Inputs
 
-| Name          | Description                                          | Type     | Default | Required |
-| ------------- | ---------------------------------------------------- | -------- | ------- | :------: |
-| `bucket_name` | Name of the S3 bucket to use for storing cache files | `string` | n/a     |   yes    |
-| `key_prefix`  | Key prefix to use for the cache files (e.g. job id)  | `string` | n/a     |   yes    |
+| parameter | description | required | default |
+| - | - | - | - |
+| bucket_name | Name of the S3 bucket to use for storing cache files | `true` |  |
+| key_prefix | Key prefix to use for the cache files | `true` |  |
 
+
+
+<!-- action-docs-inputs -->
+
+<!-- action-docs-outputs -->
 ## Outputs
 
-| Name        | Description                                                                     |
-| ----------- | ------------------------------------------------------------------------------- |
-| `processed` | Indicates if the job has already been performed for the current tree hash       |
-| `hash`      | The git tree hash which was used for cache lookup (current repo root tree hash) |
+| parameter | description |
+| - | - |
+| processed | Indicates if the job has already been performed for the current tree hash |
+| hash | The tree hash used for caching |
+
+
+
+<!-- action-docs-outputs -->
 
 ## Example Use
 
@@ -46,3 +62,11 @@ action in a step prior to running this action to ensure that's the case.
 - uses: bahmutov/npm-install@v1
   if: steps.s3-cache.outputs.processed == 'false'
 ```
+
+<!-- action-docs-runs -->
+## Runs
+
+This action is an `node12` action.
+
+
+<!-- action-docs-runs -->

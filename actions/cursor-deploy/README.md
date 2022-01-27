@@ -2,6 +2,14 @@
 
 ![](./screenshot.png)
 
+<!-- action-docs-description -->
+## Description
+
+Deploy the new version of the app by modifying a cursor file in S3 bucket for the given branch.
+
+
+<!-- action-docs-description -->
+
 Performs a deployment by updating a cursor file in an S3 bucket. This relies on infrastructure that
 uses the cursor files to serve the correct markup to the user.
 
@@ -9,19 +17,29 @@ Note that the action assumes that the AWS credentials has already been configure
 allow to read and write to the S3 bucket provided as input. Use the `configure-aws-credentials`
 action in a step prior to running this action to ensure that's the case.
 
+<!-- action-docs-inputs -->
 ## Inputs
 
-| Name                   | Description                                                            | Type     | Default   | Required |
-| ---------------------- | ---------------------------------------------------------------------- | -------- | --------- | :------: |
-| `bucket_name`          | Name of the S3 bucket to use for deployments                           | `string` | n/a       |   yes    |
-| `deploy_mode`          | The deployment mode (default/rollback/unblock)                         | `string` | `default` |    no    |
-| `rollback_commit_hash` | Commit hash to roll back to, defaults to previous commit on the branch | `string` | n/a       |    no    |
+| parameter | description | required | default |
+| - | - | - | - |
+| rollback_commit_hash | Commit hash to roll back to, defaults to the previous commit on the branch | `false` |  |
+| bucket_name | Bucket to use for deployments | `true` |  |
+| deploy_mode | The deployment mode (default | rollback | unblock) | `false` | default |
 
+
+
+<!-- action-docs-inputs -->
+
+<!-- action-docs-outputs -->
 ## Outputs
 
-| Name        | Description                        |
-| ----------- | ---------------------------------- |
-| `tree_hash` | The tree hash of the code deployed |
+| parameter | description |
+| - | - |
+| tree_hash | The tree hash of the performed deployment |
+
+
+
+<!-- action-docs-outputs -->
 
 ## Example Use
 
@@ -93,3 +111,11 @@ jobs:
                   bucket_name: my-origin-bucket
                   deploy_mode: update
 ```
+
+<!-- action-docs-runs -->
+## Runs
+
+This action is an `node12` action.
+
+
+<!-- action-docs-runs -->

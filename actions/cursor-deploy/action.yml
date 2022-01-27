@@ -1,5 +1,6 @@
 name: 'Deploy Action'
-description: 'Deploy the new version of the app by modifying the cursor file for the given branch'
+description:
+    'Deploy the new version of the app by modifying a cursor file in S3 bucket for the given branch.'
 author: 'Pleo'
 inputs:
     rollback_commit_hash:

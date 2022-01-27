@@ -1,6 +1,6 @@
 name: 'Post preview URLs'
 description:
-    'Append the URLs for branch preview app and storybook deployments to the PR description.'
+    'Append the URLs for branch app and storybook preview deployments to the PR description.'
 author: 'Pleo'
 inputs:
     token:
