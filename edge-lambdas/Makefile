@@ -1,6 +1,6 @@
 build: dist/viewer-request/index.js dist/viewer-response/index.js
 
-dist/%/index.js: src/%/index.ts src/*.ts node_modules
+dist/%/index.js: src/%/index.ts src/%/*.ts src/*.ts node_modules
 	node_modules/.bin/ncc build -e aws-sdk/clients/s3 $< -o $(dir $@)
 
 node_modules: package.json
