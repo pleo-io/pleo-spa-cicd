@@ -96,6 +96,13 @@ behavior which they are associated with.
     -   `Cache-Control` - we need to modify this header to make sure HTML files are not cached by
         user's browser
 
+#### `.well-known` files
+
+Well known files under [`/.well-known`](https://en.wikipedia.org/wiki/Well-known_URI) URI are
+exposing some information under a consistent URL across all websites (e.g.
+`.well-known/apple-app-site-association`). These are handled in a special way in code, and should
+work as expected if placed in the `.well-known` directory when uploading to S3.
+
 ### Usage
 
 These lambdas as used internally by the Frontend SPA Terraform module. Refer to documentation of
