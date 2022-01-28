@@ -1,4 +1,4 @@
-name: "Lint PR Title"
+name: "PR Check"
 
 on:
   pull_request:
@@ -9,7 +9,8 @@ on:
       - synchronize
 
 jobs:
-  lint:
+  semantic-title:
+    name: Check PR Title for Semantic Release Type
     runs-on: [self-hosted, universal]
     permissions:
       pull-requests: read
