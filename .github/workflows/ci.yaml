@@ -1,0 +1,33 @@
+name: "Semantic Release"
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  release:
+    runs-on: [self-hosted, universal]
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2.4.0
+        with:
+          persist-credentials: false
+
+      # Sets up SSH (Deploy) key which allows authoring commits directly on main branch
+      # See https://www.notion.so/pleo/Automated-version-management-and-package-publishing-ae3a1168941f4aeca0df8ff50682c088
+      - name: Setup SSH Key
+        uses: webfactory/ssh-agent@v0.5.2
+        with:
+          ssh-private-key: ${{ secrets.SEMANTIC_RELEASE_DEPLOYER_PRIVATE_KEY }}
+
+      - name: Semantic Release
+        uses: cycjimmy/semantic-release-action@v2.7.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          extra_plugins: |
+            @semantic-release/changelog
+            @semantic-release/git
