@@ -11,8 +11,7 @@ jobs:
       contents: write
       pull-requests: write
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v2.4.0
+      - uses: actions/checkout@v2.4.0
         with:
           persist-credentials: false
 
