@@ -6,6 +6,7 @@ on:
 
 jobs:
   release:
+    name: Run Semantic Release Action
     runs-on: [self-hosted, universal]
     permissions:
       contents: write
