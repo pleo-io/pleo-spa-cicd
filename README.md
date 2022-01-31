@@ -6,7 +6,7 @@
 
 👨‍🔧 This repo is lovingly stewarded by Pleo Frontend Ops.
 
-🐛 Issues should be reported [in the repo](https://github.com/pleo-io/frontend-infrastructure/issues) or via [Stewards: Frontend Infrastructure](https://linear.app/pleo/project/stewards-project-web-eaf888bda3d6) project on Linear (if you have access)
+🐛 Issues should be reported [in the repo](https://github.com/pleo-io/frontend-infrastructure/issues) or via [Stewards: Frontend Infrastructure](https://linear.app/pleo/project/stewards-frontend-infrastructure-53a0a536f855) project on Linear (if you have access).
 
 Components available:
 
