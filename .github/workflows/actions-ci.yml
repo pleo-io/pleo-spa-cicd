@@ -1,0 +1,37 @@
+name: GitHub Actions CI
+on:
+  push:
+    paths:
+      - "actions/**"
+      - ".github/workflows/actions-ci.yml"
+
+concurrency:
+  group: actions-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    working-directory: actions
+
+jobs:
+  test:
+    name: Check
+    runs-on: [self-hosted, universal]
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v2.4.0
+      - uses: actions/setup-node@v2.5.1
+        with:
+          node-version: "16"
+          cache: "yarn"
+          cache-dependency-path: actions/yarn.lock
+
+      - run: yarn --frozen-lockfile
+      - run: make test
+      - run: make lint
+      - run: make build
+
+      - name: Check if built version was committed
+        run: |
+          git diff --quiet --exit-code || (echo "::error::You forgot to commit the built actions, run 'make' locally" && exit 1)

@@ -1,0 +1,126 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+name: Deploy
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        description: "Name of the deployment environment"
+        type: string
+      bundle_uri:
+        required: true
+        description: "S3 URI of the bundle in the registry bucket"
+        type: string
+      tree_hash:
+        required: true
+        description: "Tree hash of the code to deploy"
+        type: string
+      bucket_name:
+        required: true
+        description: "Name of the S3 origin bucket"
+        type: string
+      domain_name:
+        required: true
+        description: "Domain name for the app (e.g. app.example.com)"
+        type: string
+      apply_config:
+        required: false
+        description: "Should apply:config npm script be ran"
+        type: boolean
+        default: false
+      registry_scope:
+        required: false
+        default: "@pleo-io"
+        description: "Org scope for the GitHub Package Registry"
+        type: string
+    secrets:
+      AWS_ACCESS_KEY_ID:
+        required: true
+        description: "ID of a AWS key that allows r/w access to the origin bucket"
+      AWS_SECRET_ACCESS_KEY:
+        required: true
+        description: "Secret of a AWS key that allows r/w access to the origin bucket"
+      AWS_ACCESS_KEY_ID_REGISTRY:
+        required: true
+        description: "ID of a AWS key that allows read access to the registry bucket"
+      AWS_SECRET_ACCESS_KEY_REGISTRY:
+        required: true
+        description: "Secret of a AWS key that allows read access to the registry bucket"
+    outputs:
+      deployment_url:
+        description: "URL where the deployment can be accessed"
+        value: ${{ jobs.deploy.outputs.deployment-url }}
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: [self-hosted, universal]
+    environment:
+      name: ${{ inputs.environment  }}
+      url: ${{ steps.deployment-url.outputs.url }}
+    outputs:
+      deployment_url: ${{ steps.deployment-url.outputs.url }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "16"
+          registry-url: "https://npm.pkg.github.com"
+          scope: ${{ inputs.registry_scope }}
+
+      - name: Get Deployment URL
+        id: deployment-url
+        run: |
+          SUBDOMAIN=$([[ $GITHUB_REF = "refs/heads/master" ]] && echo "" || echo "preview-${{ inputs.tree_hash }}.")
+          echo "::set-output name=url::https://${SUBDOMAIN}${{ inputs.domain_name }}"
+
+      - name: Setup AWS Credentials for Registry Bucket Access
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_REGISTRY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_REGISTRY }}
+          aws-region: eu-west-1
+
+      - name: Download & Unpack Bundle
+        run: |
+          aws s3 cp ${{ inputs.bundle_uri }} bundle.tar.gz
+          mkdir dist && tar -xvzf bundle.tar.gz -C dist
+
+      - name: Setup AWS Credentials for Origin Bucket Access
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-west-1
+
+      - name: Install Dependencies
+        uses: bahmutov/npm-install@v1
+        with:
+          useRollingCache: true
+          install-command: yarn --frozen-lockfile --ignore-scripts
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GH_REGISTRY_NPM_TOKEN }}
+
+      - name: Apply Environment Config
+        if: inputs.apply_config
+        run: |
+          yarn apply:config dist ${{ inputs.environment }} ${{ inputs.tree_hash }}
+
+      - name: Copy Static Files
+        run: |
+          aws s3 cp dist/static s3://${{ inputs.bucket_name }}/static \
+            --cache-control 'public,max-age=31536000,immutable' \
+            --recursive
+
+      - name: Copy HTML Files
+        run: |
+          aws s3 cp dist/ s3://${{ inputs.bucket_name }}/html/${{ inputs.tree_hash }} \
+           --cache-control 'public,max-age=31536000,immutable' \
+           --recursive \
+           --exclude "static/*"
+
+      - name: Update Cursor File
+        uses: "pleo-io/frontend-infrastructure/actions/cursor-deploy@v1"
+        with:
+          bucket_name: ${{ inputs.bucket_name }}

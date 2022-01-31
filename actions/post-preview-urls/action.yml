@@ -1,0 +1,22 @@
+name: 'Post preview URLs'
+description:
+    'Append the URLs for branch app and storybook preview deployments to the PR description.'
+author: 'Pleo'
+inputs:
+    token:
+        description: GitHub token used to update the PR description
+        required: false
+        default: ${{ github.token }}
+    marker:
+        description: HTML comment marker for the appended content
+        required: false
+        default: '<!--preview-urls-do-not-change-below-->'
+    app_domain:
+        description: The domain for the app deployments
+        required: true
+    storybook_stories_domain:
+        description: The domain for the storybook deployments
+        required: false
+runs:
+    using: 'node12'
+    main: 'dist/main/index.js'

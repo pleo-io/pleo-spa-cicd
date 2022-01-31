@@ -1,0 +1,21 @@
+name: 'Deploy Action'
+description:
+    'Deploy the new version of the app by modifying a cursor file in S3 bucket for the given branch.'
+author: 'Pleo'
+inputs:
+    rollback_commit_hash:
+        description: Commit hash to roll back to, defaults to the previous commit on the branch
+        required: false
+    bucket_name:
+        description: Bucket to use for deployments
+        required: true
+    deploy_mode:
+        description: The deployment mode (default / rollback / unblock)
+        required: false
+        default: 'default'
+outputs:
+    tree_hash:
+        description: The tree hash of the performed deployment
+runs:
+    using: 'node12'
+    main: 'dist/main/index.js'
