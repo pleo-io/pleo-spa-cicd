@@ -1,6 +1,12 @@
-# Frontend Infrastructure
+<h1 align="center">
+  🔋 Frontend Infrastructure
+</h1>
 
-A collection of reusable software components which can be used to build a complete CI/CD and serving infrastructure for a Single Page Application using GitHub Actions and AWS.
+💡 A collection of reusable software components which can be used to build a complete CI/CD and serving infrastructure for a Single Page Application using GitHub Actions and AWS.
+
+👨‍🔧 This repo is lovingly stewarded by Pleo Frontend Ops.
+
+🐛 Issues should be reported [in the repo](https://github.com/pleo-io/frontend-infrastructure/issues) or via [Stewards: Frontend Infrastructure](https://linear.app/pleo/project/stewards-project-web-eaf888bda3d6) project on Linear (if you have access)
 
 Components available:
 
