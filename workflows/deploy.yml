@@ -29,23 +29,24 @@ on:
         description: "Should apply:config npm script be ran"
         type: boolean
         default: false
+      registry_scope:
+        required: false
+        default: "@pleo-io"
+        description: "Org scope for the GitHub Package Registry"
+        type: string
     secrets:
       AWS_ACCESS_KEY_ID:
         required: true
-        description:
-          "ID of a AWS key that allows r/w access to the origin bucket"
+        description: "ID of a AWS key that allows r/w access to the origin bucket"
       AWS_SECRET_ACCESS_KEY:
         required: true
-        description:
-          "Secret of a AWS key that allows r/w access to the origin bucket"
+        description: "Secret of a AWS key that allows r/w access to the origin bucket"
       AWS_ACCESS_KEY_ID_REGISTRY:
         required: true
-        description:
-          "ID of a AWS key that allows read access to the registry bucket"
+        description: "ID of a AWS key that allows read access to the registry bucket"
       AWS_SECRET_ACCESS_KEY_REGISTRY:
         required: true
-        description:
-          "Secret of a AWS key that allows read access to the registry bucket"
+        description: "Secret of a AWS key that allows read access to the registry bucket"
     outputs:
       deployment_url:
         description: "URL where the deployment can be accessed"
@@ -66,7 +67,7 @@ jobs:
         with:
           node-version: "16"
           registry-url: "https://npm.pkg.github.com"
-          scope: "@pleo-io"
+          scope: ${{ inputs.registry_scope }}
 
       - name: Get Deployment URL
         id: deployment-url

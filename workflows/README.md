@@ -32,12 +32,13 @@ uploads the result to an S3 registry bucket.
 
 #### Inputs
 
-| Name           | Description                                                                | Type     | Default | Required |
-| -------------- | -------------------------------------------------------------------------- | -------- | ------- | :------: |
-| `app_name`     | Name of the app, unique for the repo, kebab-cased                          | `string` | n/a     |   yes    |
-| `bucket_name`  | Name of the S3 registry bucket                                             | `string` | n/a     |   yes    |
-| `build_dir`    | Name of the directory where the production output is built                 | `string` | n/a     |   yes    |
-| `build_script` | Name of the script in package.json used for building the production output | `string` | n/a     |   yes    |
+| Name             | Description                                                                | Type     | Default    | Required |
+| ---------------- | -------------------------------------------------------------------------- | -------- | ---------- | :------: |
+| `app_name`       | Name of the app, unique for the repo, kebab-cased                          | `string` | n/a        |   yes    |
+| `bucket_name`    | Name of the S3 registry bucket                                             | `string` | n/a        |   yes    |
+| `build_dir`      | Name of the directory where the production output is built                 | `string` | n/a        |   yes    |
+| `build_script`   | Name of the script in package.json used for building the production output | `string` | n/a        |   yes    |
+| `registry_scope` | Org scope for the GitHub Package Registry                                  | `string` | `@pleo-io` |    no    |
 
 #### Secrets
 
@@ -64,8 +65,7 @@ build:
     bucket_name: my-registry-bucket
   secrets:
     AWS_ACCESS_KEY_ID_REGISTRY: ${{ secrets.AWS_ACCESS_KEY_ID_REGISTRY }}
-    AWS_SECRET_ACCESS_KEY_REGISTRY:
-      ${{ secrets.AWS_SECRET_ACCESS_KEY_REGISTRY }}
+    AWS_SECRET_ACCESS_KEY_REGISTRY: ${{ secrets.AWS_SECRET_ACCESS_KEY_REGISTRY }}
 ```
 
 ### Deploy
@@ -75,14 +75,15 @@ the cursor file for the current branch.
 
 #### Inputs
 
-| Name           | Description                                    | Type      | Default | Required |
-| -------------- | ---------------------------------------------- | --------- | ------- | :------: |
-| `environment`  | Name of the deployment environment             | `string`  | n/a     |   yes    |
-| `bundle_uri`   | S3 URI of the bundle in the registry bucket    | `string`  | n/a     |   yes    |
-| `tree_hash`    | Tree hash of the code to deploy                | `string`  | n/a     |   yes    |
-| `bucket_name`  | Name of the S3 origin bucket                   | `string`  | n/a     |   yes    |
-| `domain_name`  | Domain name for the app (e.g. app.example.com) | `string`  | n/a     |   yes    |
-| `apply_config` | Should apply:config npm script be ran          | `boolean` | `false` |    no    |
+| Name             | Description                                    | Type      | Default    | Required |
+| ---------------- | ---------------------------------------------- | --------- | ---------- | :------: |
+| `environment`    | Name of the deployment environment             | `string`  | n/a        |   yes    |
+| `bundle_uri`     | S3 URI of the bundle in the registry bucket    | `string`  | n/a        |   yes    |
+| `tree_hash`      | Tree hash of the code to deploy                | `string`  | n/a        |   yes    |
+| `bucket_name`    | Name of the S3 origin bucket                   | `string`  | n/a        |   yes    |
+| `domain_name`    | Domain name for the app (e.g. app.example.com) | `string`  | n/a        |   yes    |
+| `apply_config`   | Should apply:config npm script be ran          | `boolean` | `false`    |    no    |
+| `registry_scope` | Org scope for the GitHub Package Registry      | `string`  | `@pleo-io` |    no    |
 
 #### Secrets
 
@@ -116,6 +117,5 @@ deploy:
     AWS_ACCESS_KEY_ID_ORIGIN: ${{ secrets.AWS_ACCESS_KEY_ID }}
     AWS_SECRET_ACCESS_KEY_ORIGIN: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
     AWS_ACCESS_KEY_ID_REGISTRY: ${{ secrets.AWS_ACCESS_KEY_ID_REGISTRY }}
-    AWS_SECRET_ACCESS_KEY_REGISTRY:
-      ${{ secrets.AWS_SECRET_ACCESS_KEY_REGISTRY }}
+    AWS_SECRET_ACCESS_KEY_REGISTRY: ${{ secrets.AWS_SECRET_ACCESS_KEY_REGISTRY }}
 ```
