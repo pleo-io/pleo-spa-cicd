@@ -1,7 +1,6 @@
 # Frontend Infrastructure Reusable Workflows
 
-This directory contains
-[reusable GitHub workflows](https://docs.github.com/en/actions/using-workflows/reusing-workflows)
+[Reusable GitHub workflows](https://docs.github.com/en/actions/using-workflows/reusing-workflows)
 which help implementing a CI/CD pipeline described in this repository.
 
 ### Prerequisites
