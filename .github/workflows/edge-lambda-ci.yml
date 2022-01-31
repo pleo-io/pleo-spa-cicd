@@ -1,6 +1,6 @@
 name: Lambda@Edge CI
 on:
-  push:
+  pull_request:
     paths:
       - "edge-lambdas/**"
       - ".github/workflows/edge-lambda-ci.yml"

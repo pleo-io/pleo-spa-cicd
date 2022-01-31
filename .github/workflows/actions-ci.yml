@@ -1,6 +1,6 @@
 name: GitHub Actions CI
 on:
-  push:
+  pull_request:
     paths:
       - "actions/**"
       - ".github/workflows/actions-ci.yml"
