@@ -1,7 +1,7 @@
 ## Frontend Infrastructure Lambda@Edge Lambdas
 
-This directory contains [Edge Lambda functions](https://aws.amazon.com/lambda/edge/) that support
-the way of serving SPA apps described in this repository.
+[Edge Lambda functions](https://aws.amazon.com/lambda/edge/) that support the way of serving SPA
+apps described in this repository.
 
 ### Setup
 
