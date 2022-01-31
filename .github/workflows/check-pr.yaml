@@ -11,7 +11,7 @@ on:
 jobs:
   semantic-title:
     name: Check PR Title for Semantic Release Type
-    runs-on: [self-hosted, universal]
+    runs-on: ubuntu-20.04
     permissions:
       pull-requests: read
     steps:

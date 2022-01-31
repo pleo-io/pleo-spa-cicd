@@ -16,7 +16,7 @@ defaults:
 jobs:
   test:
     name: Check
-    runs-on: [self-hosted, universal]
+    runs-on: ubuntu-20.04
     permissions:
       contents: read
     steps:
