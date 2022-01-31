@@ -29,7 +29,7 @@ jobs:
 
       - run: yarn --frozen-lockfile
       - run: make test
-      - run: yarn prettier --check .
+      - run: make lint
       - run: make build
 
       - name: Check if built version was committed

@@ -21,6 +21,9 @@ s3-cache/dist/%/index.js: s3-cache/%.ts utils.ts node_modules
 test: node_modules
 	./node_modules/.bin/jest
 
+lint: node_modules
+	./node_modules/.bin/prettier --check .
+
 node_modules: package.json
 	if ! test -d node_modules; then yarn; fi
 
