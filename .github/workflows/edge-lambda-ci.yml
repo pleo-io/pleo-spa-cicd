@@ -15,7 +15,7 @@ defaults:
 
 jobs:
   ci:
-    name: Build & Test
+    name: Check
     runs-on: [self-hosted, universal]
     permissions:
       contents: read
