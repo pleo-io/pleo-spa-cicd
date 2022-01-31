@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/pleo-io/frontend-infrastructure/compare/v1.1.0...v1.2.0) (2022-01-31)
+
+
+### Features
+
+* **edge-lambdas:** Lambda@Edge functions for the new frontend delivery infrastructure ([#1](https://github.com/pleo-io/frontend-infrastructure/issues/1)) ([909b033](https://github.com/pleo-io/frontend-infrastructure/commit/909b03326c9653164a5b2bb77fd5621d07303f82))
+
 # [1.1.0](https://github.com/pleo-io/frontend-infrastructure/compare/v1.0.0...v1.1.0) (2022-01-31)
 
 
