@@ -2,8 +2,8 @@
   🔋 Pleo SPA CI/CD
 </h1>
 
-💡 A collection of reusable GitHub Actions and Workflows which that help to
-build a complete CI/CD pipeline for a Single Page Application.
+💡 A collection of reusable GitHub Actions and Workflows helpful while building
+a complete CI/CD pipeline for a Single Page Application using the cursor files.
 
 👨‍🔧 This repo is lovingly stewarded by Pleo Frontend Ops.
 
