@@ -1,4 +1,6 @@
-# Frontend Infrastructure GitHub Actions
+<h1 align="center">
+  🔋 Pleo SPA CI/CD - GitHub Actions
+</h1>
 
 [Custom JS GitHub actions](https://docs.github.com/en/actions/creating-actions/creating-a-javascript-action)
 which help implementing a CI/CD pipeline described in this repository.

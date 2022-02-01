@@ -1,4 +1,6 @@
-# Post preview URLs Action
+<h1 align="center">
+  🔋 Pleo SPA CI/CD - Post Preview URLs Action
+</h1>
 
 ![](./screenshot.png)
 

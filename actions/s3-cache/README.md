@@ -1,4 +1,6 @@
-# S3 Cache Action
+<h1 align="center">
+  🔋 Pleo SPA CI/CD - S3 Cache Action
+</h1>
 
 ![](./screenshot.png)
 
