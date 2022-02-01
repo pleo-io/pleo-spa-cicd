@@ -37,16 +37,20 @@ on:
     secrets:
       AWS_ACCESS_KEY_ID:
         required: true
-        description: "ID of a AWS key that allows r/w access to the origin bucket"
+        description:
+          "ID of a AWS key that allows r/w access to the origin bucket"
       AWS_SECRET_ACCESS_KEY:
         required: true
-        description: "Secret of a AWS key that allows r/w access to the origin bucket"
+        description:
+          "Secret of a AWS key that allows r/w access to the origin bucket"
       AWS_ACCESS_KEY_ID_REGISTRY:
         required: true
-        description: "ID of a AWS key that allows read access to the registry bucket"
+        description:
+          "ID of a AWS key that allows read access to the registry bucket"
       AWS_SECRET_ACCESS_KEY_REGISTRY:
         required: true
-        description: "Secret of a AWS key that allows read access to the registry bucket"
+        description:
+          "Secret of a AWS key that allows read access to the registry bucket"
     outputs:
       deployment_url:
         description: "URL where the deployment can be accessed"
@@ -62,8 +66,8 @@ jobs:
     outputs:
       deployment_url: ${{ steps.deployment-url.outputs.url }}
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v2.4.0
+      - uses: actions/setup-node@v2.5.1
         with:
           node-version: "16"
           registry-url: "https://npm.pkg.github.com"
@@ -95,7 +99,7 @@ jobs:
           aws-region: eu-west-1
 
       - name: Install Dependencies
-        uses: bahmutov/npm-install@v1
+        uses: bahmutov/npm-install@v1.7.11
         with:
           useRollingCache: true
           install-command: yarn --frozen-lockfile --ignore-scripts
@@ -121,6 +125,6 @@ jobs:
            --exclude "static/*"
 
       - name: Update Cursor File
-        uses: "pleo-io/frontend-infrastructure/actions/cursor-deploy@v1"
+        uses: "../actions/cursor-deploy"
         with:
           bucket_name: ${{ inputs.bucket_name }}
