@@ -50,6 +50,9 @@ on:
         required: true
         description:
           "Secret of a AWS key that allows read access to the registry bucket"
+      GH_REGISTRY_NPM_TOKEN:
+        required: true
+        description: "Token for NPM package registry"
     outputs:
       deployment_url:
         description: "URL where the deployment can be accessed"

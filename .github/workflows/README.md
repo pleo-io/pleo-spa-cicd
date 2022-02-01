@@ -45,6 +45,7 @@ uploads the result to an S3 registry bucket.
 | -------------------------------- | ----------------------------------------------------------------- | :------: |
 | `AWS_ACCESS_KEY_ID_REGISTRY`     | ID of a AWS key that allows r/w access to the registry bucket     |   yes    |
 | `AWS_SECRET_ACCESS_KEY_REGISTRY` | Secret of a AWS key that allows r/w access to the registry bucket |   yes    |
+| `GH_REGISTRY_NPM_TOKEN`          | Token for NPM package registry                                    |   yes    |
 
 #### Outputs
 
@@ -64,7 +65,8 @@ build:
     bucket_name: my-registry-bucket
   secrets:
     AWS_ACCESS_KEY_ID_REGISTRY: ${{ secrets.AWS_ACCESS_KEY_ID_REGISTRY }}
-    AWS_SECRET_ACCESS_KEY_REGISTRY: ${{ secrets.AWS_SECRET_ACCESS_KEY_REGISTRY }}
+    AWS_SECRET_ACCESS_KEY_REGISTRY:
+      ${{ secrets.AWS_SECRET_ACCESS_KEY_REGISTRY }}
 ```
 
 ### Deploy
@@ -92,6 +94,7 @@ the cursor file for the current branch.
 | `AWS_SECRET_ACCESS_KEY_REGISTRY` | Secret of a AWS key that allows read access to the registry bucket |   yes    |
 | `AWS_ACCESS_KEY_ID_ORIGIN`       | ID of a AWS key that allows r/w access to the origin bucket        |   yes    |
 | `AWS_SECRET_ACCESS_KEY_ORIGIN`   | Secret of a AWS key that allows r/w access to the origin bucket    |   yes    |
+| `GH_REGISTRY_NPM_TOKEN`          | Token for NPM package registry                                     |   yes    |
 
 #### Outputs
 
@@ -116,5 +119,6 @@ deploy:
     AWS_ACCESS_KEY_ID_ORIGIN: ${{ secrets.AWS_ACCESS_KEY_ID }}
     AWS_SECRET_ACCESS_KEY_ORIGIN: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
     AWS_ACCESS_KEY_ID_REGISTRY: ${{ secrets.AWS_ACCESS_KEY_ID_REGISTRY }}
-    AWS_SECRET_ACCESS_KEY_REGISTRY: ${{ secrets.AWS_SECRET_ACCESS_KEY_REGISTRY }}
+    AWS_SECRET_ACCESS_KEY_REGISTRY:
+      ${{ secrets.AWS_SECRET_ACCESS_KEY_REGISTRY }}
 ```

@@ -35,6 +35,9 @@ on:
         description:
           "Secret of a AWS key that allows r/w access to the registry bucket"
         required: true
+      GH_REGISTRY_NPM_TOKEN:
+        required: true
+        description: "Token for NPM package registry"
     outputs:
       tree_hash:
         description: "Tree hash of the code built"
