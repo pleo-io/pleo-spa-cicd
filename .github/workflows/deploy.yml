@@ -124,6 +124,6 @@ jobs:
            --exclude "static/*"
 
       - name: Update Cursor File
-        uses: "./actions/cursor-deploy"
+        uses: "pleo-io/pleo-spa-cicd/actions/cursor-deploy@1.0.2"
         with:
           bucket_name: ${{ inputs.bucket_name }}

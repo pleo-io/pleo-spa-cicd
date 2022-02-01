@@ -64,7 +64,7 @@ jobs:
           aws-region: eu-west-1
 
       - name: Check S3 Cache
-        uses: "./actions/s3-cache"
+        uses: "pleo-io/pleo-spa-cicd/actions/s3-cache@1.0.2"
         id: s3-cache
         with:
           bucket_name: ${{ inputs.bucket_name }}
