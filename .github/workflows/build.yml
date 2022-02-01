@@ -64,7 +64,7 @@ jobs:
           aws-region: eu-west-1
 
       - name: Check S3 Cache
-        uses: "../actions/s3-cache"
+        uses: "./actions/s3-cache"
         id: s3-cache
         with:
           bucket_name: ${{ inputs.bucket_name }}
