@@ -1,4 +1,6 @@
-# Cursor Deploy Action
+<h1 align="center">
+  🔋 Pleo SPA CI/CD - Cursor Deploy Action
+</h1>
 
 ![](./screenshot.png)
 
