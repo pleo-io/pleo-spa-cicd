@@ -1,6 +1,4 @@
-<h1 align="center">
-  🔋 Pleo SPA CI/CD - Reusable Workflows
-</h1>
+# Frontend Infrastructure Reusable Workflows
 
 [Reusable GitHub workflows](https://docs.github.com/en/actions/using-workflows/reusing-workflows)
 which help implementing a CI/CD pipeline described in this repository.
@@ -66,8 +64,7 @@ build:
     bucket_name: my-registry-bucket
   secrets:
     AWS_ACCESS_KEY_ID_REGISTRY: ${{ secrets.AWS_ACCESS_KEY_ID_REGISTRY }}
-    AWS_SECRET_ACCESS_KEY_REGISTRY:
-      ${{ secrets.AWS_SECRET_ACCESS_KEY_REGISTRY }}
+    AWS_SECRET_ACCESS_KEY_REGISTRY: ${{ secrets.AWS_SECRET_ACCESS_KEY_REGISTRY }}
 ```
 
 ### Deploy
@@ -119,6 +116,5 @@ deploy:
     AWS_ACCESS_KEY_ID_ORIGIN: ${{ secrets.AWS_ACCESS_KEY_ID }}
     AWS_SECRET_ACCESS_KEY_ORIGIN: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
     AWS_ACCESS_KEY_ID_REGISTRY: ${{ secrets.AWS_ACCESS_KEY_ID_REGISTRY }}
-    AWS_SECRET_ACCESS_KEY_REGISTRY:
-      ${{ secrets.AWS_SECRET_ACCESS_KEY_REGISTRY }}
+    AWS_SECRET_ACCESS_KEY_REGISTRY: ${{ secrets.AWS_SECRET_ACCESS_KEY_REGISTRY }}
 ```

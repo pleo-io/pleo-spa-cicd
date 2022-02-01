@@ -15,7 +15,7 @@ project on Linear (if you have access).
 ## Contents
 
 - [Custom GitHub Actions](/actions)
-- [Reusable GitHub Workflows](/workflows)
+- [Reusable GitHub Workflows](/.github/workflows)
 
 ## Contributing
 
