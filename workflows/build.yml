@@ -14,12 +14,13 @@ on:
         type: string
       build_dir:
         required: true
-        description: "Name of the directory where the production output is built"
+        description:
+          "Name of the directory where the production output is built"
         type: string
       build_script:
         required: true
-        description: "Script in package.json used for building the production
-          output"
+        description:
+          "Script in package.json used for building the production output"
         type: string
       registry_scope:
         required: false
@@ -28,10 +29,12 @@ on:
         type: string
     secrets:
       AWS_ACCESS_KEY_ID:
-        description: "ID of a AWS key that allows r/w access to the registry bucket"
+        description:
+          "ID of a AWS key that allows r/w access to the registry bucket"
         required: true
       AWS_SECRET_ACCESS_KEY:
-        description: "Secret of a AWS key that allows r/w access to the registry bucket"
+        description:
+          "Secret of a AWS key that allows r/w access to the registry bucket"
         required: true
     outputs:
       tree_hash:
@@ -49,8 +52,8 @@ jobs:
       tree_hash: ${{ steps.s3-cache.outputs.hash }}
       bundle_uri: ${{ steps.bundle-uri.outputs.uri }}
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v2.4.0
+      - uses: actions/setup-node@v2.5.1
         with:
           node-version: "16"
           registry-url: "https://npm.pkg.github.com"
@@ -62,7 +65,7 @@ jobs:
           aws-region: eu-west-1
 
       - name: Check S3 Cache
-        uses: "pleo-io/frontend-infrastructure/actions/s3-cache@v1"
+        uses: "../actions/s3-cache"
         id: s3-cache
         with:
           bucket_name: ${{ inputs.bucket_name }}
@@ -70,7 +73,7 @@ jobs:
 
       - name: Install Dependencies
         if: steps.s3-cache.outputs.processed == 'false'
-        uses: bahmutov/npm-install@v1
+        uses: bahmutov/npm-install@v1.7.11
         with:
           useRollingCache: true
           install-command: yarn --frozen-lockfile --ignore-scripts
