@@ -89,7 +89,7 @@ jobs:
       - name: Get Bundle S3 URI
         id: bundle-uri
         run: |
-          echo "::set-output name=uri::s3://${{ inputs.bucket_name }}/bundles/${{ steps.s3-cache.outputs.hash }}.tar.gz"
+          echo "::set-output name=uri::s3://${{ inputs.bucket_name }}/bundles/${{ github.repository }}/${{ inputs.app_name }}/${{ steps.s3-cache.outputs.hash }}.tar.gz"
 
       - name: Compress & Upload Bundle
         if: steps.s3-cache.outputs.processed == 'false'
