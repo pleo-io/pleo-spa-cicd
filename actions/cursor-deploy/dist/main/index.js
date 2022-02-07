@@ -9613,6 +9613,7 @@ const github = __importStar(__nccwpck_require__(5438));
 const utils_1 = __nccwpck_require__(691);
 const deployModes = ['default', 'rollback', 'unblock'];
 (0, utils_1.runAction)(() => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, _b, _c;
     const bucket = core.getInput('bucket_name', { required: true });
     const deployModeInput = core.getInput('deploy_mode', { required: true });
     const rollbackCommitHash = core.getInput('rollback_commit_hash');
@@ -9620,7 +9621,7 @@ const deployModes = ['default', 'rollback', 'unblock'];
         bucket,
         deployModeInput,
         rollbackCommitHash,
-        ref: github.context.ref
+        ref: (_c = (_b = (_a = github.context.payload) === null || _a === void 0 ? void 0 : _a.pull_request) === null || _b === void 0 ? void 0 : _b.head.ref) !== null && _c !== void 0 ? _c : github.context.ref
     });
     core.setOutput('tree_hash', output.treeHash);
 }));

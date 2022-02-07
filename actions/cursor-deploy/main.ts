@@ -33,7 +33,7 @@ runAction(async () => {
         bucket,
         deployModeInput,
         rollbackCommitHash,
-        ref: github.context.ref
+        ref: github.context.payload?.pull_request?.head.ref ?? github.context.ref
     })
 
     core.setOutput('tree_hash', output.treeHash)
