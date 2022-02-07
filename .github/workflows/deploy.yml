@@ -128,6 +128,6 @@ jobs:
            --exclude "static/*"
 
       - name: Update Cursor File
-        uses: "pleo-io/pleo-spa-cicd/actions/cursor-deploy@1.0.6"
+        uses: "pleo-io/pleo-spa-cicd/actions/cursor-deploy@v1.0.7"
         with:
           bucket_name: ${{ inputs.bucket_name }}
