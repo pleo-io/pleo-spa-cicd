@@ -12,7 +12,7 @@ import {getCurrentRepoTreeHash, fileExistsInS3, runAction} from '../utils'
 
 runAction(async () => {
     const bucket = core.getInput('bucket_name', {required: true})
-    const keyPrefix = core.getInput('key_prefix', {required: true})
+    const keyPrefix = core.getInput('key_prefix') ?? github.context.job
     const repo = github.context.repo
 
     const output = await restoreS3Cache({bucket, keyPrefix, repo})

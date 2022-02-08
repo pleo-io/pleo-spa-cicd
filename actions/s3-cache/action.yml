@@ -7,8 +7,8 @@ inputs:
         description: Name of the S3 bucket to use for storing cache files
         required: true
     key_prefix:
-        description: Key prefix to use for the cache files
-        required: true
+        description: Key prefix to use for the cache files. By default the job ID is used
+        required: false
 outputs:
     processed:
         description: Indicates if the job has already been performed for the current tree hash

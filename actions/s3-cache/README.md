@@ -29,10 +29,10 @@ action in a step prior to running this action to ensure that's the case.
 
 ## Inputs
 
-| parameter   | description                                          | required | default |
-| ----------- | ---------------------------------------------------- | -------- | ------- |
-| bucket_name | Name of the S3 bucket to use for storing cache files | `true`   |         |
-| key_prefix  | Key prefix to use for the cache files                | `true`   |         |
+| parameter   | description                                                          | required | default |
+| ----------- | -------------------------------------------------------------------- | -------- | ------- |
+| bucket_name | Name of the S3 bucket to use for storing cache files                 | `true`   |         |
+| key_prefix  | Key prefix to use for the cache files. By default the job ID is used | `false`  |         |
 
 <!-- action-docs-inputs -->
 

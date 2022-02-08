@@ -9612,8 +9612,9 @@ const core = __importStar(__nccwpck_require__(2186));
 const github = __importStar(__nccwpck_require__(5438));
 const utils_1 = __nccwpck_require__(691);
 (0, utils_1.runAction)(() => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     const bucket = core.getInput('bucket_name', { required: true });
-    const keyPrefix = core.getInput('key_prefix', { required: true });
+    const keyPrefix = (_a = core.getInput('key_prefix')) !== null && _a !== void 0 ? _a : github.context.job;
     const repo = github.context.repo;
     const output = yield restoreS3Cache({ bucket, keyPrefix, repo });
     // Saving key and hash in "state" which can be retrieved by the
