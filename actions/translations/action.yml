@@ -1,0 +1,16 @@
+name: 'Translation Action'
+description: '.'
+author: 'Pleo'
+inputs:
+    bucket_name:
+        description: Bucket to use for deployments
+        required: true
+    sha-base:
+        description: Sha base
+        required: true
+    sha-head:
+        description: Sha head
+        required: true
+runs:
+    using: 'node16'
+    main: 'dist/main/index.js'
