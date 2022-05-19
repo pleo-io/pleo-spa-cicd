@@ -1,0 +1,21 @@
+{
+    "private": true,
+    "name": "pleo-spa-cdicd-actions",
+    "version": "0.0.0",
+    "dependencies": {
+        "@actions/core": "1.6.0",
+        "@actions/exec": "1.1.0",
+        "@actions/github": "5.0.0"
+    },
+    "devDependencies": {
+        "@types/common-tags": "^1.8.1",
+        "@types/jest": "^27.4.0",
+        "@vercel/ncc": "0.33.1",
+        "action-docs": "^1.0.3",
+        "common-tags": "^1.8.2",
+        "jest": "27.4.7",
+        "prettier": "^2.5.1",
+        "ts-jest": "^27.1.2",
+        "typescript": "4.5.5"
+    }
+}
